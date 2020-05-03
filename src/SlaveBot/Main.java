@@ -15,6 +15,8 @@ import java.util.*;
 
 public class Main {
 
+    /* Create a file in the root directory of the bot called 'token.txt' containing your token */
+
     static DiscordClient client;
     static EventProcessor eventProcessor;
 
