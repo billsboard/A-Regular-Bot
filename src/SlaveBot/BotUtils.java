@@ -32,13 +32,13 @@ class BotUtils {
     static int botTier = 0;
     static BotTier[] botTiers = {
             null,
-            new BotTier(1000, 10000, 100, 0, 100),
-            new BotTier(5000, 15000, 300, 50, 150),
-            new BotTier(10000, 60000, 500, 75, 300),
-            new BotTier(25000, 100000, 1000, 100, 400),
-            new BotTier(50000, 200000, 1250, 125, 450),
-            new BotTier(100000, 300000, Integer.MAX_VALUE, 0, Integer.MAX_VALUE),
-            new BotTier(200000, 600000, Integer.MAX_VALUE, 300, Integer.MAX_VALUE)
+            new BotTier(20000, 25000, 100, 0, 100),
+            new BotTier(25000, 45000, 300, 50, 150),
+            new BotTier(50000, 150000, 400, 75, 200),
+            new BotTier(100000, 250000, 500, 100, 200),
+            new BotTier(180000, 380000, 500, 100, 350),
+            new BotTier(400000, 760000, Integer.MAX_VALUE, 0, Integer.MAX_VALUE),
+            new BotTier(500000, 1000000, Integer.MAX_VALUE, 370, Integer.MAX_VALUE)
     };
 
     static double maxReputationCap = 100.0;
