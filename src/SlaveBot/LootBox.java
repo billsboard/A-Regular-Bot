@@ -1,6 +1,6 @@
 package SlaveBot;
 
-public class LootBox {
+class LootBox {
     static Item[] LOOT = {
             Market.getItem("Stick"),
             Market.getItem("Stick"),

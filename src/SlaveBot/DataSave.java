@@ -4,8 +4,8 @@ import java.io.*;
 import java.rmi.server.ExportException;
 import java.util.ArrayList;
 
-public class DataSave {
-    public static void saveData(){
+class DataSave {
+    static void saveData(){
         if(!new File("botData.ser").exists()){
             try {
                 new File("botData.ser").createNewFile();
@@ -41,7 +41,7 @@ public class DataSave {
         }
     }
 
-    public static void loadData(){
+    static void loadData(){
         try{
             FileInputStream fileIn = new FileInputStream("botData.ser");
             ObjectInputStream in = new ObjectInputStream(fileIn);

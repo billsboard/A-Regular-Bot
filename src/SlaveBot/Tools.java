@@ -4,10 +4,10 @@ import discord4j.core.object.util.Snowflake;
 
 import java.util.ArrayList;
 
-public class Tools {
+class Tools {
     static ArrayList<User> users = new ArrayList<>();
 
-    public static User getUser(long DiscordID){
+    static User getUser(long DiscordID){
         for (User u: users) {
             if(u.id == DiscordID){
                 discord4j.core.object.entity.User user = Main.client.getUserById(Snowflake.of(DiscordID)).block();
@@ -23,5 +23,10 @@ public class Tools {
         User newUser = new User(DiscordID);
         users.add(newUser);
         return newUser;
+    }
+
+    static User recreateUser(long DiscordID){
+        users.remove(getUser(DiscordID));
+        return getUser(DiscordID);
     }
 }

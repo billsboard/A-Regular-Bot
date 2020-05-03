@@ -30,7 +30,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.function.Consumer;
 import java.util.stream.LongStream;
 
-public class EventProcessor {
+class EventProcessor {
     Flux<MessageCreateEvent> on;
 
     ArrayList<ListenerThread> gamesActive = new ArrayList<>();
@@ -40,7 +40,7 @@ public class EventProcessor {
     SimpleDateFormat sdf = new SimpleDateFormat("YYYY-MM-DD hh:mm:ss");
 
 
-    public EventProcessor(Flux<MessageCreateEvent> on) {
+    EventProcessor(Flux<MessageCreateEvent> on) {
         this.on = on;
 
         File file = new File("log.txt");
@@ -64,7 +64,7 @@ public class EventProcessor {
         });
     }
 
-    public void onMessageReceived(Message message){
+    private void onMessageReceived(Message message){
 
         if(!message.getContent().isPresent()) return;
 
@@ -79,12 +79,13 @@ public class EventProcessor {
         User internalSender = Tools.getUser(sender.getId().asLong());
 
 
-        if(!body.contains(BotUtils.BOT_PREFIX)) return;
-        else if(sender.isBot() && sender.getId().asLong() != Main.client.getSelfId().get().asLong()) return;
+        if(sender.isBot()) return;
 
         for (ListenerThread thread : gamesActive) {
-            thread.processCommand(lowerArgs[0].substring(1), lowerArgs, internalSender);
+            thread.processCommand(lowerArgs[0], lowerArgs, internalSender);
         }
+
+        if(!body.contains(BotUtils.BOT_PREFIX)) return;
 
         for (int i = 0; i < lowerArgs.length; i++) {
             lowerArgs[i] = lowerArgs[i].replaceAll("’", "'");
@@ -99,7 +100,7 @@ public class EventProcessor {
                 BotUtils.sendMessage(channel, "Pong! Bot is online!");
                 break;
             }
-            case "profile":{
+            case "profile": case "p":{
                 if(lowerArgs.length < 2){
                     Consumer<EmbedCreateSpec> embedCreateSpec = embed -> {
                         embed.setTitle(sender.getUsername() + "'s profile");
@@ -145,6 +146,10 @@ public class EventProcessor {
                     BotUtils.sendEmbedSpec(channel,embedCreateSpec);
                 }
 
+                break;
+            }
+            case "werk":{
+                BotUtils.sendMessage(channel, "No "+ sender.getMention() +", you must learn to spell!");
                 break;
             }
             case "stats":{
@@ -216,6 +221,85 @@ public class EventProcessor {
                 Leveling.displayLeaderBoard(channel, internalSender);
                 break;
             }
+            case "deposit": case "dep":{
+                if (lowerArgs.length < 2) {
+                    BotUtils.sendMessage(channel, "Command usage: `deposit <amount>");
+                    break;
+                }
+
+                if(lowerArgs[1].equalsIgnoreCase("all")) lowerArgs[1] = Integer.toString(internalSender.getMoney());
+
+                if(!BotUtils.isNumeric(lowerArgs[1]) || Integer.parseInt(lowerArgs[1]) <= 0){
+                    BotUtils.sendMessage(channel, "Argument must be a non-negative, positive integer that is greater than 0");
+                    break;
+                }
+
+                int amount = Integer.parseInt(lowerArgs[1]);
+                if(amount > internalSender.getMoney()){
+                    BotUtils.sendMessage(channel, "You cannot deposit what you don't have!");
+                    break;
+                }
+
+                int trueAmount = internalSender.getBank() + amount > internalSender.maxBankValue ? (internalSender.maxBankValue - internalSender.getBank()) : amount;
+                if(trueAmount != amount){
+                    internalSender.depositMoney(trueAmount);
+                    BotUtils.sendMessage(channel, "Deposited $`" + trueAmount + "`. Your bank is now full. Additional money was returned to you");
+                }
+                else{
+                    internalSender.depositMoney(trueAmount);
+                    BotUtils.sendMessage(channel, "Deposited $`" + trueAmount + "` into the bank. Your bank balance is now $`" + internalSender.getBank() + "`");
+                }
+                break;
+
+            }
+            case "withdraw":{
+                if (lowerArgs.length < 2) {
+                    BotUtils.sendMessage(channel, "Command usage: `withdraw <amount>");
+                    break;
+                }
+
+                if(lowerArgs[1].equalsIgnoreCase("all")) lowerArgs[1] = Integer.toString(internalSender.getBank());
+
+
+                if(!BotUtils.isNumeric(lowerArgs[1]) || Integer.parseInt(lowerArgs[1]) <= 0){
+                    BotUtils.sendMessage(channel, "Argument must be a non-negative, positive integer that is greater than 0");
+                    break;
+                }
+
+                int amount = Integer.parseInt(lowerArgs[1]);
+                if(amount > internalSender.getBank()){
+                    BotUtils.sendMessage(channel, "You cannot withdraw what you don't have!");
+                    break;
+                }
+
+                internalSender.withdrawMoney(amount);
+                BotUtils.sendMessage(channel, "Withdrew $`" + amount + "` from the bank. Your bank balance is now `" + internalSender.getBank() + "`");
+                break;
+            }
+            case "wd":{
+                if (lowerArgs.length < 2) {
+                    BotUtils.sendMessage(channel, "Command usage: `withdraw <amount>");
+                    break;
+                }
+
+                if(lowerArgs[1].equalsIgnoreCase("all")) lowerArgs[1] = Integer.toString(internalSender.getBank());
+
+
+                if(!BotUtils.isNumeric(lowerArgs[1]) || Integer.parseInt(lowerArgs[1]) <= 0){
+                    BotUtils.sendMessage(channel, "Argument must be a non-negative, positive integer that is greater than 0");
+                    break;
+                }
+
+                int amount = Integer.parseInt(lowerArgs[1]);
+                if(amount > internalSender.getBank()){
+                    BotUtils.sendMessage(channel, "You cannot withdraw what you don't have!");
+                    break;
+                }
+
+                internalSender.withdrawMoney(amount);
+                BotUtils.sendMessage(channel, "Withdrew $`" + amount + "` from the bank. Your bank balance is now `" + internalSender.getBank() + "`");
+                break;
+            }
             case "work":{
                 if(internalSender.canWork()){
                     int money = BotUtils.random.nextInt((int) (internalSender.getReputation() + BotUtils.maxReputationCap) * 5 + 1) + 200;
@@ -251,9 +335,9 @@ public class EventProcessor {
                 }
                 break;
             }
-            case "money":{
+            case "money": case "bal": case "balance":{
                 if(lowerArgs.length < 2){
-                    BotUtils.sendMessage(channel, "You have `$" + internalSender.getMoney() + "` in your account");
+                    BotUtils.sendMessage(channel, "Your financial statement\nAccount: $`" + internalSender.getMoney() + " / Unlimited`\nBank: $`" +internalSender.getBank() + " / " + internalSender.maxBankValue + "`");
                     break;
                 }
 
@@ -263,7 +347,8 @@ public class EventProcessor {
                     break;
                 }
 
-                BotUtils.sendMessage(channel, target.username + " has `$" + target.getMoney() + "`");
+                BotUtils.sendMessage(channel, "" + target.username +"'s financial statement\nAccount: $`" + target.getMoney() + " / Unlimited`\nBank: $`" +target.getBank() + " / " + target.maxBankValue + "`");
+
                 break;
             }
             case "give": {
@@ -368,37 +453,7 @@ public class EventProcessor {
                 BotUtils.sendMessage(channel, "Money added successfully!");
                 break;
             }
-            case "inventory":{
-                if(lowerArgs.length < 2){
-                    internalSender.sendInventory(channel);
-                    break;
-                }
-
-                User target = BotUtils.getInternalUserFromMention(lowerArgs[1]);
-                if(target == null){
-                    BotUtils.sendMessage(channel, "Target user not found!");
-                    break;
-                }
-
-                target.sendInventory(channel);
-                break;
-            }
-            case "i":{
-                if(lowerArgs.length < 2){
-                    internalSender.sendInventory(channel);
-                    break;
-                }
-
-                User target = BotUtils.getInternalUserFromMention(lowerArgs[1]);
-                if(target == null){
-                    BotUtils.sendMessage(channel, "Target user not found!");
-                    break;
-                }
-
-                target.sendInventory(channel);
-                break;
-            }
-            case "inv":{
+            case "inventory": case "i": case "inv":{
                 if(lowerArgs.length < 2){
                     internalSender.sendInventory(channel);
                     break;
@@ -428,6 +483,10 @@ public class EventProcessor {
                 else if(lowerArgs[1].equalsIgnoreCase("work")){
                     if(!internalSender.canSlaveWork()){
                         BotUtils.sendRatelimitMessage(channel, BotUtils.slaveWorkTime - (new Date().getTime() - internalSender.lastSlaveWork));
+                        break;
+                    }
+                    if(internalSender.slaveList.size() <= 0){
+                        BotUtils.sendMessage(channel, "You do not have any slaves!");
                         break;
                     }
                     ArrayList<String> removeList = new ArrayList<>();
@@ -681,6 +740,100 @@ public class EventProcessor {
                 }
                 if(!internalSender.canAttack()){
                     BotUtils.sendRatelimitMessage(channel, BotUtils.attackTime - (new Date().getTime() - internalSender.lastAttack));
+                    break;
+                }
+
+                if(target.id == Main.client.getSelfId().get().asLong() && BotUtils.botFightActive){
+                    if(weapon.isUtility()) {
+                        switch (weapon.getName()) {
+                            case "Armor Piercing Bullet": {
+                                int damage = weapon.getDamage();
+                                if (target.getShield() <= 0) {
+                                    BotUtils.sendMessage(channel, "Target had no shield to destroy");
+                                } else {
+                                    target.setShield(target.getShield() - damage < 0 ? 0 : target.getShield() - damage);
+                                    String output = sender.getMention() + " hit <@" + target.id + ">'s shield for `" + damage + "` damage\n";
+                                    output += target.getShield() <= 0 ? "Their shield has been destroyed" : "They have `" + target.getShield() + "` shield left";
+
+                                    BotUtils.sendMessage(channel, output);
+
+
+                                }
+                                break;
+                            }
+                            default:{
+                                BotUtils.sendMessage(channel, "Bot fight active, non-damaging items cannot be used against it");
+                                break;
+                            }
+                        }
+                    }
+                    else if(!weapon.isWeapon()){
+                        BotUtils.sendMessage(channel, weapon.getName() + " is not a weapon!");
+                    }
+                    else{
+                        double dmg = weapon.getDamage();
+                        if(dmg == 0){
+                            BotUtils.sendMessage(channel, "Your attack missed!");
+                            internalSender.gainXP(channel, BotUtils.random.nextDouble() * 100 + 25);
+                        }
+                        else{
+                            //dmg = dmg * 1.8 > Integer.MAX_VALUE ? Integer.MAX_VALUE : dmg * 1.8;
+                            target.damage(dmg);
+                            dmg *= 1 - (target.defense / (target.defense + 150));
+                            dmg = Double.parseDouble(String.format("%.2f", (float) dmg));
+                            if(target.getHealth() <= 0){
+                                BotUtils.botFightActive = false;
+                                BotUtils.sendMessage(channel, (Main.getUserByID(internalSender.id).getMention() +" hit the bot for " + dmg + " damage!\nIt has been killed!"));
+                                int tempInt = ((long) 3)* ((long) target.money) > Integer.MAX_VALUE ? Integer.MAX_VALUE : 3 * target.getMoney();
+                                int moneyGained = BotUtils.random.nextInt(((tempInt) / 4)+1) + (target.money / 4);
+
+                                BotUtils.sendMessage(channel, (Main.getUserByID(internalSender.id).getMention() + " managed to loot $" + moneyGained + " from the bot\n"));
+
+                                BotUtils.botTier++;
+                                if(BotUtils.botTier > BotUtils.botTiers.length){
+                                    BotUtils.sendMessage(channel, "The bot fight has concluded. Please wait for a new one to start");
+                                    BotUtils.endBotFight();
+                                }
+                                else{
+                                    BotUtils.sendMessage(channel, "Tier " + (BotUtils.botTier - 1) + " defeated! Next tier commencing...");
+                                    BotUtils.setBotTier(BotUtils.botTier);
+                                    User bot = Tools.getUser(Main.client.getSelfId().get().asLong());
+                                    Consumer<EmbedCreateSpec> embedCreateSpec = embed -> {
+                                        embed.setTitle(bot.username + "'s profile");
+                                        embed.addField("Level:", "" + bot.getLevel(), true);
+                                        embed.addField("Progress:", String.format("%.2f", (float) bot.getXp()) + "/" + bot.getXPRequired(), true);
+                                        embed.addField("\u200b", String.format("%.2f", (float) (bot.getXp() / bot.getXPRequired()) * 100) + "%", true);
+                                        embed.addField("Balance", ":moneybag: " + bot.getMoney(), true);
+                                        embed.addField("Health", ":heart: " + bot.getHealth(), true);
+                                        embed.addField("Shield", ":shield: " + bot.getShield(), true);
+                                        embed.addField("Kills:", "" + bot.kills, true);
+                                        embed.addField("Deaths:", "" + bot.deaths, true);
+                                        embed.addField("K/D Ratio:", String.format("%.2f", bot.deaths > 0 ? ((float)bot.kills)/((float)bot.deaths) : 0.00f), true);
+                                        embed.addField("Reputation", ":scales: " + String.format("%.2f", (float) bot.getReputation()), false);
+                                        embed.addField("Slaves:", "**Alive**: " + bot.slaveList.size(), true);
+                                        embed.addField("\u200b", "**Escaped**: " + bot.escapedSlaves, true);
+                                        embed.addField("\u200b", "**Dead**: " + bot.deadSlaves, true);
+                                    };
+                                    BotUtils.sendEmbedSpec(channel,embedCreateSpec);
+                                }
+
+                                internalSender.addMoney(moneyGained);
+                                internalSender.kills++;
+                                target.deaths++;
+                                target.money = 0;
+                                internalSender.gainXP(channel, BotUtils.random.nextDouble() * 1500 + 825);
+                            }
+                            else if(target.getShield() > 0){
+                                BotUtils.sendMessage(channel, (Main.getUserByID(internalSender.id).getMention() + " hit the bot for " + dmg + " damage!\nIt's shield took the blow!"));
+                                internalSender.gainXP(channel, BotUtils.random.nextDouble() * 500 + 25);
+                            }
+                            else{
+                                BotUtils.sendMessage(channel, (Main.getUserByID(internalSender.id).getMention() + " hit the bot for " + dmg + " damage!\nIt have `"
+                                        + String.format("%.2f", (float) target.getHealth()) + "`hp remaining"));
+                                internalSender.gainXP(channel, BotUtils.random.nextDouble() * 500 + 25);
+                            }
+                        }
+                    }
                     break;
                 }
 
@@ -1311,6 +1464,45 @@ public class EventProcessor {
             }
             case "easteregg":{
                 BotUtils.sendMessage(channel, ":egg:");
+                break;
+            }
+            case "resetbot":{
+                if(!LongStream.of(BotUtils.ADMINS).anyMatch(x -> x == internalSender.id)){
+                    BotUtils.sendMessage(channel, "Error: Permission denied");
+                    break;
+                }
+
+                User bot = Tools.getUser(Main.client.getSelfId().get().asLong());
+                Tools.users.remove(bot);
+                bot = Tools.getUser(bot.id);
+                bot.maxHealth = Integer.MAX_VALUE;
+                bot.setHealth(Integer.MAX_VALUE);
+                bot.setShield(Integer.MAX_VALUE);
+                bot.addMoney(400000);
+                BotUtils.sendMessage(channel, "Bot reset!");
+                break;
+            }
+            case "upgradebank": case "bankupgrade":{
+                if(internalSender.getMoney() < BotUtils.bankUpgradeValues[internalSender.bankUpgrades][0]){
+                    BotUtils.sendMessage(channel, "You do not have enough funds for tier " + (internalSender.bankUpgrades + 1) +
+                            ":\n```st\nAvailable: " + internalSender.getMoney() + "\nNeeded: " + BotUtils.bankUpgradeValues[internalSender.bankUpgrades][0] + "```");
+                }
+                else{
+                    internalSender.removeMoney(BotUtils.bankUpgradeValues[internalSender.bankUpgrades][0]);
+                    internalSender.maxBankValue += BotUtils.bankUpgradeValues[internalSender.bankUpgrades][1];
+                    internalSender.bankUpgrades++;
+                    BotUtils.sendMessage(channel, "Bank upgraded! Your new max balance is $" + internalSender.maxBankValue);
+                }
+                break;
+            }
+            case "startbotfight":{
+                if(!BotUtils.isAdmin(sender.getId().asLong())){
+                    BotUtils.sendMessage(channel, "Error: Permission denied");
+                    break;
+                }
+
+                BotUtils.startBotFight();
+                BotUtils.sendMessage(channel, "Bot fight sucessfully started");
                 break;
             }
             case "help":{

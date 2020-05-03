@@ -77,7 +77,7 @@ public class Market implements Serializable {
 
     }
 
-    public static Consumer<EmbedCreateSpec> createEmbedMarket(String category, User user){
+    private static Consumer<EmbedCreateSpec> createEmbedMarket(String category, User user){
         return embed -> {
             embed.setTitle("Available " + category);
 
@@ -91,17 +91,17 @@ public class Market implements Serializable {
         };
     }
 
-    public static void sendMarket(MessageChannel channel, User user){
+    static void sendMarket(MessageChannel channel, User user){
         for (String s : categories.keySet()) {
             BotUtils.sendEmbedSpec(channel, createEmbedMarket(s, user));
         }
     }
 
-    public static void sendMarket(MessageChannel channel, String category, User user){
+    static void sendMarket(MessageChannel channel, String category, User user){
         BotUtils.sendEmbedSpec(channel, createEmbedMarket(category, user));
     }
 
-    public static boolean itemExists(String item){
+    static boolean itemExists(String item){
         for (String s : categories.keySet()) {
             for (Item i : categories.get(s)) {
                 if(i.getName().equalsIgnoreCase(item)) return true;
@@ -111,7 +111,7 @@ public class Market implements Serializable {
         return false;
     }
 
-    public static Item getItem(String item){
+    static Item getItem(String item){
         for (String s : categories.keySet()) {
             for (Item i : categories.get(s)) {
                 if(i.getName().equalsIgnoreCase(item)) return i;

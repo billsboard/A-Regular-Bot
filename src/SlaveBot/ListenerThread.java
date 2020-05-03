@@ -53,7 +53,7 @@ public class ListenerThread extends Thread{
     public void processCommand(String command, String[] lowerArgs, User sender){
         if(sender.id != user.id) return;
         switch (command){
-            case "acceptflip":{
+            case "acceptflip": case "$acceptflip":{
                 if(sender.money < dataInt1){
                     BotUtils.sendMessage(channel, "You do not have sufficient money anymore");
                     break;

@@ -16,7 +16,7 @@ public class User implements Serializable {
     String username;
 
     int level = 0;
-    double xp = 0.0;
+    private double xp = 0.0;
 
     long lastDaily, lastEscape, lastCrime, lastSlave, lastAttack, lastHeal, lastWork, lastWeekly, lastSlaveWork, lastLoot;
 
@@ -28,28 +28,30 @@ public class User implements Serializable {
     String tempStringVar;
 
     int bankMoney = 0;
+    int maxBankValue = BotUtils.maxBankValue;
+    int bankUpgrades = 0;
 
     double defense = 0;
 
-    int shieldRemaining = 0;
+    private int shieldRemaining = 0;
 
     int kills = 0, deaths = 0;
     boolean challengeActive = false;
 
-    double reputation = 0.00;
+    private double reputation = 0.00;
 
     HashMap<Item, Integer> inventory = new HashMap<>();
     ArrayList<String> slaveList = new ArrayList<>();
     ArrayList<Long> idList = new ArrayList<>();
 
 
-    public User(long discordID){
+    User(long discordID){
         id = discordID;
         username = Main.getUserByID(id).getUsername();
         money = 0;
     }
 
-    public boolean canWeekly(){
+    boolean canWeekly(){
         Date date1 = new Date(lastWeekly);
         Date date2 = new Date();
         if(Math.abs(date1.getTime() - date2.getTime()) >= BotUtils.weeklyTime){
@@ -65,7 +67,7 @@ public class User implements Serializable {
         return false;
     }
 
-    public boolean canDaily(){
+    boolean canDaily(){
         Date date1 = new Date(lastDaily);
         Date date2 = new Date();
         if(Math.abs(date1.getTime() - date2.getTime()) >= BotUtils.dailyTime){
@@ -81,7 +83,7 @@ public class User implements Serializable {
         return false;
     }
 
-    public boolean canCrime(){
+    boolean canCrime(){
         Date date1 = new Date(lastCrime);
         Date date2 = new Date();
         if(Math.abs(date1.getTime() - date2.getTime()) >= BotUtils.crimeTime){
@@ -91,7 +93,7 @@ public class User implements Serializable {
         return false;
     }
 
-    public boolean canLoot(){
+    boolean canLoot(){
         Date date1 = new Date(lastLoot);
         Date date2 = new Date();
         if(Math.abs(date1.getTime() - date2.getTime()) >= BotUtils.lootTime){
@@ -101,7 +103,7 @@ public class User implements Serializable {
         return false;
     }
 
-    public boolean canSlaveWork(){
+    boolean canSlaveWork(){
         Date date1 = new Date(lastSlaveWork);
         Date date2 = new Date();
         if(Math.abs(date1.getTime() - date2.getTime()) >= BotUtils.slaveWorkTime){
@@ -111,7 +113,7 @@ public class User implements Serializable {
         return false;
     }
 
-    public boolean canWork(){
+    boolean canWork(){
         Date date1 = new Date(lastWork);
         Date date2 = new Date();
         if(Math.abs(date1.getTime() - date2.getTime()) >= BotUtils.workTime){
@@ -121,7 +123,7 @@ public class User implements Serializable {
         return false;
     }
 
-    public boolean canSlave(){
+    boolean canSlave(){
         Date date1 = new Date(lastSlave);
         Date date2 = new Date();
         if(Math.abs(date1.getTime() - date2.getTime()) >= BotUtils.slaveTime){
@@ -131,7 +133,7 @@ public class User implements Serializable {
         return false;
     }
 
-    public boolean canEscape(){
+    boolean canEscape(){
         Date date1 = new Date(lastEscape);
         Date date2 = new Date();
         if(Math.abs(date1.getTime() - date2.getTime()) >= BotUtils.escapeTime){
@@ -141,7 +143,7 @@ public class User implements Serializable {
         return false;
     }
 
-    public boolean canAttack(){
+    boolean canAttack(){
         Date date1 = new Date(lastAttack);
         Date date2 = new Date();
         if(Math.abs(date1.getTime() - date2.getTime()) >= BotUtils.attackTime){
@@ -151,7 +153,7 @@ public class User implements Serializable {
         return false;
     }
 
-    public boolean canHeal(){
+    boolean canHeal(){
         Date date1 = new Date(lastHeal);
         Date date2 = new Date();
         if(Math.abs(date1.getTime() - date2.getTime()) >= BotUtils.healTime){
@@ -161,7 +163,7 @@ public class User implements Serializable {
         return false;
     }
 
-    public int getQuantity(Item item){
+    int getQuantity(Item item){
         if(!containsItem(item)) return 0;
         if(inventory.get(getItem(item)) <= 0){
             inventory.remove(getItem(item));
@@ -170,7 +172,7 @@ public class User implements Serializable {
         return inventory.get(getItem(item));
     }
 
-    public boolean containsItem(Item item){
+    boolean containsItem(Item item){
         for (Item i : inventory.keySet()) {
             if(i == null){}
             else if(i.getName().equals(item.getName()) && inventory.get(i) >= 1){
@@ -181,7 +183,7 @@ public class User implements Serializable {
         return false;
     }
 
-    public Item getItem(Item item){
+    Item getItem(Item item){
         if(!containsItem(item)){return null;}
         for (Item i : inventory.keySet()) {
             if(i.getName().equals(item.getName())){
@@ -193,7 +195,7 @@ public class User implements Serializable {
         return item;
     }
 
-    public void addItem(Item item){
+    void addItem(Item item){
         if(!containsItem(item)){
             inventory.put(item, 1);
         }
@@ -202,7 +204,7 @@ public class User implements Serializable {
         }
     }
 
-    public void addItem(Item item, int amount){
+    void addItem(Item item, int amount){
         if(!containsItem(item)){
             inventory.put(item, amount);
         }
@@ -212,7 +214,7 @@ public class User implements Serializable {
     }
 
 
-    public void removeItem(Item item){
+    void removeItem(Item item){
         if(!containsItem(item)){return;}
         else if(inventory.get(getItem(item)) - 1 <= 0){
             inventory.remove(getItem(item));
@@ -222,7 +224,7 @@ public class User implements Serializable {
         }
     }
 
-    public void removeItem(Item item, int amount){
+    void removeItem(Item item, int amount){
         if(!containsItem(item)){return;}
         else if(inventory.get(getItem(item)) - amount <= 0){
             inventory.remove(getItem(item));
@@ -233,11 +235,11 @@ public class User implements Serializable {
     }
 
 
-    public int getMoney(){
+    int getMoney(){
         return money;
     }
 
-    public void addMoney(int amount){
+    void addMoney(int amount){
         if((long) money + (long) amount > Integer.MAX_VALUE){money = Integer.MAX_VALUE;}
         else if(amount <= 0){return;}
         else{
@@ -245,7 +247,7 @@ public class User implements Serializable {
         }
     }
 
-    public void removeMoney(int amount){
+    void removeMoney(int amount){
         if(money - amount < 0){money = 0;}
         else if(amount <= 0){return;}
         else {
@@ -253,13 +255,13 @@ public class User implements Serializable {
         }
     }
 
-    public void addSlave(String slaveName, long id){
+    void addSlave(String slaveName, long id){
         slaveList.add(slaveName);
         idList.add(id);
         addItem(new Item("Slave", "A healthy, working slave", 200));
     }
 
-    public void removeSlave(String slaveName){
+    void removeSlave(String slaveName){
         if(!slaveList.contains(slaveName)){return;}
 
         int index = slaveList.indexOf(slaveName);
@@ -289,7 +291,23 @@ public class User implements Serializable {
         }
     }
 
-    public String getFormattedSlaveList(){
+    void depositMoney(int money){
+        if(money < 1) return;
+        bankMoney = bankMoney + money > maxBankValue ? maxBankValue : bankMoney + money;
+        removeMoney(money);
+    }
+
+    void withdrawMoney(int money){
+        if(money < 1) return;
+        bankMoney = bankMoney - money < 0 ? 0 : bankMoney - money;
+        addMoney(money);
+    }
+
+    int getBank(){
+        return bankMoney;
+    }
+
+    String getFormattedSlaveList(){
         String output = "Displaying captured slaves for " + username + ":\n";
         for (int i = 0; i < slaveList.size(); i++) {
             output += slaveList.get(i) + "\n";
@@ -298,7 +316,7 @@ public class User implements Serializable {
         return output.trim();
     }
 
-    public void sendInventory(MessageChannel channel){
+    void sendInventory(MessageChannel channel){
         Consumer<EmbedCreateSpec> embedCreateSpec = embed -> {
             embed.setTitle(username + "'s inventory");
             String s = "";
@@ -317,12 +335,12 @@ public class User implements Serializable {
         BotUtils.sendEmbedSpec(channel, embedCreateSpec);
     }
 
-    public double getHealth(){
+    double getHealth(){
         health = Double.parseDouble(String.format("%.2f", (float) health));
         return Double.parseDouble(String.format("%.2f", (float) health));
     }
 
-    public void damage(double health){
+    void damage(double health){
         health *= (1 - (defense / (defense + 150)));
         if(shieldRemaining > health) {shieldRemaining -= health;}
         else{
@@ -337,7 +355,7 @@ public class User implements Serializable {
         }
     }
 
-    public void heal(int health){
+    void heal(int health){
         if(this.health + health > maxHealth || this.health + health < 0){
             this.health = maxHealth;
         }
@@ -346,37 +364,37 @@ public class User implements Serializable {
         }
     }
 
-    public void setHealth(double health){
+    void setHealth(double health){
         this.health = health;
     }
 
-    public double getMaxHealth(){
+    double getMaxHealth(){
         return maxHealth;
     }
 
-    public void setShield(int shield){
+    void setShield(int shield){
         this.shieldRemaining = shield;
     }
 
-    public int getShield(){
+    int getShield(){
         return shieldRemaining;
     }
 
-    public double getReputation(){
+    double getReputation(){
         return reputation;
     }
 
-    public void changeReputation(double change){
+    void changeReputation(double change){
         if(reputation + change > BotUtils.maxReputationCap) reputation = BotUtils.maxReputationCap;
         else if(reputation + change <= -BotUtils.maxReputationCap) reputation = -BotUtils.maxReputationCap;
         else reputation += change;
     }
 
-    public double getXPRequired(){
+    double getXPRequired(){
         return Double.parseDouble(String.format("%.2f", (float) 25* Math.pow(1.5, level)));
     }
 
-    public void gainXP(MessageChannel channel, double xp){
+    void gainXP(MessageChannel channel, double xp){
         this.xp += xp;
         while (this.xp > getXPRequired()){
             this.xp -= getXPRequired();
@@ -388,11 +406,11 @@ public class User implements Serializable {
         }
     }
 
-    public double getXp(){
+    double getXp(){
         return xp;
     }
 
-    public int getLevel(){
+    int getLevel(){
         return level;
     }
 

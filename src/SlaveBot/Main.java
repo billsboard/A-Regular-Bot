@@ -9,6 +9,8 @@ import discord4j.core.object.presence.Activity;
 import discord4j.core.object.presence.Presence;
 import discord4j.core.object.util.Snowflake;
 
+import java.io.FileNotFoundException;
+import java.io.FileReader;
 import java.util.*;
 
 public class Main {
@@ -16,7 +18,7 @@ public class Main {
     static DiscordClient client;
     static EventProcessor eventProcessor;
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws FileNotFoundException {
 
         Runtime.getRuntime().addShutdownHook(new Thread(() -> {
             for (SlaveBot.User u : Tools.users) {
@@ -26,7 +28,10 @@ public class Main {
             System.out.println("Application Terminating ...");
         }));
 
-        DiscordClientBuilder builder = DiscordClientBuilder.create("Token here");
+        Scanner scan = new Scanner(new FileReader("token.txt"));
+        DiscordClientBuilder builder = DiscordClientBuilder.create(scan.nextLine());
+        scan.close();
+
         builder.setInitialPresence(Presence.online(Activity.watching(" for commands | $help")));
         client = builder.build();
 

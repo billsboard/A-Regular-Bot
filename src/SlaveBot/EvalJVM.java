@@ -5,15 +5,16 @@ import discord4j.core.object.entity.MessageChannel;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.io.StringWriter;
+import java.util.Random;
 import java.util.concurrent.TimeUnit;
 
 public class EvalJVM extends Thread{
 
-    MessageChannel channel;
-    String lang;
-    String code;
+    private MessageChannel channel;
+    private String lang;
+    private String code;
 
-    public void start(MessageChannel channel, String lang, String code){
+    void start(MessageChannel channel, String lang, String code){
         this.channel = channel;
         this.code = code;
         this.lang = lang;
@@ -31,9 +32,15 @@ public class EvalJVM extends Thread{
         }
     }
 
-    public void startSecondJVM() throws Exception {
+    private void startSecondJVM() throws Exception {
+        int fileNum = BotUtils.random.nextInt();
+
         String separator = System.getProperty("file.separator");
         String classpath = System.getProperty("java.class.path");
+
+        new ProcessBuilder("mkdir", Integer.toString(fileNum)).start().waitFor();
+        new ProcessBuilder("chroot", Integer.toString(fileNum)).start().waitFor();
+
         String path = System.getProperty("java.home")
                 + separator + "bin" + separator + "java";
         ProcessBuilder processBuilder =
@@ -68,6 +75,9 @@ public class EvalJVM extends Thread{
             if(out.equals("``````")) out = "```Program exited with code 0```";
         }
         BotUtils.sendMessage(channel, out);
+        new ProcessBuilder("exit").start().waitFor();
+        new ProcessBuilder("rm", "-r", Integer.toString(fileNum)).start().waitFor();
+
     }
 
     class TimerThread extends Thread{
@@ -75,7 +85,7 @@ public class EvalJVM extends Thread{
         MessageChannel c;
         EvalJVM w;
 
-        public void start(MessageChannel channel, EvalJVM wrapper){
+        void start(MessageChannel channel, EvalJVM wrapper){
             c = channel;
             w = wrapper;
             super.start();

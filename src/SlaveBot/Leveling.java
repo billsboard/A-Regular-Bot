@@ -10,13 +10,13 @@ import java.util.function.Consumer;
 public class Leveling implements Serializable {
     private static final long serialVersionUID = 100L;
 
-    public static User[] leaderBoard = new User[7];
+    static User[] leaderBoard = new User[7];
 
     public static User getUserAtIndex(int index){
         return leaderBoard[index];
     }
 
-    public static int getIndexOfUser(User user){
+    private static int getIndexOfUser(User user){
         for (int i = 0; i < leaderBoard.length; i++) {
             if(user.id == leaderBoard[i].id){
                 return i;
@@ -25,7 +25,7 @@ public class Leveling implements Serializable {
         return -1;
     }
 
-    public static boolean isOnLeaderboard(User user){
+    private static boolean isOnLeaderboard(User user){
         for (User u : leaderBoard) {
             if(u == null){}
             else if(u.id == user.id) return true;
@@ -33,7 +33,7 @@ public class Leveling implements Serializable {
         return false;
     }
 
-    public static void addLeaderboard(User user){
+    static void addLeaderboard(User user){
         if(user == null) return;
         if(isOnLeaderboard(user)){
             int index = getIndexOfUser(user);
@@ -80,7 +80,7 @@ public class Leveling implements Serializable {
 
     }
 
-    public static boolean isHigher(User a, User b){
+    private static boolean isHigher(User a, User b){
         if (b == null) return true;
         if(a.getLevel() > b.getLevel()) return true;
         else if(a.getLevel() == b.getLevel() && a.getXp() > b.getXp()) return true;
@@ -88,7 +88,7 @@ public class Leveling implements Serializable {
         return false;
     }
 
-    public static void createLeaderboard(){
+    static void createLeaderboard(){
         leaderBoard = new User[leaderBoard.length];
         for (User u : Tools.users) {
             addLeaderboard(u);
@@ -102,7 +102,7 @@ public class Leveling implements Serializable {
         }
     }
 
-    public static void displayLeaderBoard(MessageChannel channel, User user){
+    static void displayLeaderBoard(MessageChannel channel, User user){
         addLeaderboard(user);
         Consumer<EmbedCreateSpec> embedCreateSpec = embed -> {
             embed.setTitle("Leveling leaderboard");
