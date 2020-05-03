@@ -782,7 +782,6 @@ class EventProcessor {
                             dmg *= 1 - (target.defense / (target.defense + 150));
                             dmg = Double.parseDouble(String.format("%.2f", (float) dmg));
                             if(target.getHealth() <= 0){
-                                BotUtils.botFightActive = false;
                                 BotUtils.sendMessage(channel, (Main.getUserByID(internalSender.id).getMention() +" hit the bot for " + dmg + " damage!\nIt has been killed!"));
                                 int tempInt = ((long) 3)* ((long) target.money) > Integer.MAX_VALUE ? Integer.MAX_VALUE : 3 * target.getMoney();
                                 int moneyGained = BotUtils.random.nextInt(((tempInt) / 4)+1) + (target.money / 4);

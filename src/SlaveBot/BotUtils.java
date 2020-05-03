@@ -33,10 +33,10 @@ class BotUtils {
     static BotTier[] botTiers = {
             null,
             new BotTier(1000, 10000, 100, 0, 100),
-            new BotTier(5000, 15000, 500, 50, 350),
-            new BotTier(10000, 60000, 1000, 75, 600),
-            new BotTier(25000, 100000, 1750, 100, 1000),
-            new BotTier(50000, 200000, 2250, 125, 1250),
+            new BotTier(5000, 15000, 300, 50, 150),
+            new BotTier(10000, 60000, 500, 75, 300),
+            new BotTier(25000, 100000, 1000, 100, 400),
+            new BotTier(50000, 200000, 1250, 125, 450),
             new BotTier(100000, 300000, Integer.MAX_VALUE, 0, Integer.MAX_VALUE),
             new BotTier(200000, 600000, Integer.MAX_VALUE, 300, Integer.MAX_VALUE)
     };
