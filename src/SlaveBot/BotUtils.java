@@ -38,7 +38,7 @@ class BotUtils {
             new BotTier(100000, 250000, 500, 100, 200),
             new BotTier(180000, 380000, 500, 100, 350),
             new BotTier(400000, 760000, Integer.MAX_VALUE, 0, Integer.MAX_VALUE),
-            new BotTier(500000, 1000000, Integer.MAX_VALUE, 370, Integer.MAX_VALUE)
+            new BotTier(500000, 1000000, Integer.MAX_VALUE, 150, Integer.MAX_VALUE)
     };
 
     static double maxReputationCap = 100.0;
@@ -58,18 +58,7 @@ class BotUtils {
     }
 
     static User getInternalUserFromMention(String mention){
-        if(mention.contains("!")){
-            return Tools.getUser(Long.parseLong(mention.substring(mention.indexOf("!") + 1, mention.indexOf(">"))));
-        }
-        else if(mention.contains("&")){
-            return Tools.getUser(Long.parseLong(mention.substring(mention.indexOf("&") + 1)));
-        }
-        else if(mention.contains("&")){
-            return Tools.getUser(Long.parseLong(mention.substring(mention.indexOf("&") + 1)));
-        }
-        else{
-            return Tools.getUser(Long.parseLong(mention.substring(0, mention.indexOf(">"))));
-        }
+        return Tools.getUser(Long.parseLong(mention.replaceAll("[^\\d.]", "")));
     }
 
     static void sendRatelimitMessage(MessageChannel channel, long millisRemaining){
