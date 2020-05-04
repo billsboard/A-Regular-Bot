@@ -863,6 +863,7 @@ class EventProcessor {
                                 internalSender.gainXP(channel, BotUtils.random.nextDouble() * 500 + 25);
                             }
                         }
+                        internalSender.removeItem(weapon);
                     }
                     break;
                 }
