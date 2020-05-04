@@ -826,7 +826,7 @@ class EventProcessor {
                                 internalSender.gainXP(channel, BotUtils.random.nextDouble() * 1500 + 825);
 
                                 BotUtils.botTier++;
-                                if(BotUtils.botTier > BotUtils.botTiers.length){
+                                if(BotUtils.botTier >= BotUtils.botTiers.length){
                                     BotUtils.sendMessage(channel, "The bot fight has concluded. Please wait for a new one to start or summon one with a programmer's tool");
                                     BotUtils.endBotFight();
                                 }
