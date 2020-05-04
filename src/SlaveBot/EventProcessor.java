@@ -1,10 +1,12 @@
 package SlaveBot;
 
+import com.sun.management.OperatingSystemMXBean;
 import discord4j.core.event.domain.message.MessageCreateEvent;
 import discord4j.core.object.Embed;
 import discord4j.core.object.entity.Message;
 import discord4j.core.object.entity.MessageChannel;
 import discord4j.core.object.entity.*;
+import discord4j.core.object.util.Snowflake;
 import discord4j.core.spec.EmbedCreateSpec;
 import discord4j.core.spec.MessageCreateSpec;
 import io.netty.util.internal.shaded.org.jctools.queues.MessagePassingQueue;
@@ -19,6 +21,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.PrintStream;
 import java.lang.annotation.Target;
+import java.lang.management.ManagementFactory;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -97,7 +100,35 @@ class EventProcessor {
         /* Person Commands */
         switch (lowerArgs[0].substring(1)){
             case "ping":{
-                BotUtils.sendMessage(channel, "Pong! Bot is online!");
+                Consumer<EmbedCreateSpec> embedCreateSpec = e -> {
+                    e.setTitle("Bot information page");
+
+                    e.addField("**Status**", ":green_circle: Online", true);
+                    e.addField("**Ping**", Main.client.getResponseTime() + "ms", true);
+                    e.addField("**Prefix**", "You already know", true);
+
+                    OperatingSystemMXBean osBean = ManagementFactory.getPlatformMXBean(
+                            OperatingSystemMXBean.class);
+
+                    String col1 = "",col2 = "",col3 = "";
+                    col1 += "CPU Usage:\n"; col2 += osBean.getSystemCpuLoad() + "%\n"; col3 += "\u200b\n";
+                    col1 += "Memory:\n"; col2 += "Free: `" + osBean.getFreePhysicalMemorySize() + "`B\n"; col3 += "Total: `" + osBean.getTotalPhysicalMemorySize() + "`B\n";
+                    col1 += "Swap:\n"; col2 += "Free: `" + osBean.getFreeSwapSpaceSize() + "`B\n"; col3 += "Total: `" + osBean.getTotalSwapSpaceSize() + "`B\n";
+                    col1 += "Network:\n"; col2 += "IP: `" + BotUtils.getPublicIP() + "`\n"; col3 += "Status: OK" + "\n";
+
+
+
+                    e.addField("**System info**", col1, true);
+                    e.addField("\u200b", col2, true);
+                    e.addField("\u200b", col3, true);
+
+                    discord4j.core.object.entity.User bill = Main.client.getUserById(Snowflake.of(506696814490288128L)).block();
+                    e.addField("**Credits**", "Coded by " + bill.getMention() +
+                            "\nCoded using Discord4j version 3.0.14\n", true);
+
+
+                };
+                BotUtils.sendEmbedSpec(channel, embedCreateSpec);
                 break;
             }
             case "profile": case "p":{
