@@ -99,7 +99,7 @@ class EventProcessor {
 
         /* Person Commands */
         switch (lowerArgs[0].substring(1)){
-            case "ping":{
+            case "ping": case "status": case "botinfo":{
                 Consumer<EmbedCreateSpec> embedCreateSpec = e -> {
                     e.setTitle("Bot information page");
 
@@ -819,9 +819,15 @@ class EventProcessor {
 
                                 BotUtils.sendMessage(channel, (Main.getUserByID(internalSender.id).getMention() + " managed to loot $" + moneyGained + " from the bot\n"));
 
+                                internalSender.addMoney(moneyGained);
+                                internalSender.kills++;
+                                target.deaths++;
+                                target.money = 0;
+                                internalSender.gainXP(channel, BotUtils.random.nextDouble() * 1500 + 825);
+
                                 BotUtils.botTier++;
                                 if(BotUtils.botTier > BotUtils.botTiers.length){
-                                    BotUtils.sendMessage(channel, "The bot fight has concluded. Please wait for a new one to start");
+                                    BotUtils.sendMessage(channel, "The bot fight has concluded. Please wait for a new one to start or summon one with a programmer's tool");
                                     BotUtils.endBotFight();
                                 }
                                 else{
@@ -846,12 +852,6 @@ class EventProcessor {
                                     };
                                     BotUtils.sendEmbedSpec(channel,embedCreateSpec);
                                 }
-
-                                internalSender.addMoney(moneyGained);
-                                internalSender.kills++;
-                                target.deaths++;
-                                target.money = 0;
-                                internalSender.gainXP(channel, BotUtils.random.nextDouble() * 1500 + 825);
                             }
                             else if(target.getShield() > 0){
                                 BotUtils.sendMessage(channel, (Main.getUserByID(internalSender.id).getMention() + " hit the bot for " + dmg + " damage!\nIt's shield took the blow!"));
