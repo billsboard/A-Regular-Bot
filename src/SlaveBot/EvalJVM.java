@@ -39,6 +39,9 @@ public class EvalJVM extends Thread{
         String classpath = System.getProperty("java.class.path");
 
         new ProcessBuilder("mkdir", Integer.toString(fileNum)).start().waitFor();
+        new ProcessBuilder("cp","-a","/usr", Integer.toString(fileNum) + "/").start().waitFor();
+        new ProcessBuilder("cp","-a","/lib", Integer.toString(fileNum) + "/").start().waitFor();
+        new ProcessBuilder("cp","-a","/lib64", Integer.toString(fileNum) + "/").start().waitFor();
         new ProcessBuilder("chroot", Integer.toString(fileNum)).start().waitFor();
 
         String path = System.getProperty("java.home")

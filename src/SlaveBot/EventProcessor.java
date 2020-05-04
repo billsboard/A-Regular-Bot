@@ -1458,6 +1458,12 @@ class EventProcessor {
 
             }
             case "eval":{
+
+                if(!BotUtils.isAdmin(internalSender.id)){
+                    BotUtils.sendMessage(channel, "Eval disabled");
+                    break;
+                }
+
                 BotUtils.sendMessage(channel, "Evaluating... This could take a while");
                 String data = "";
                 for (int i = 2; i < lowerArgs.length; i++) {
