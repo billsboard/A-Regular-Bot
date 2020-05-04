@@ -48,7 +48,7 @@ class BotUtils {
     static int[][] bankUpgradeValues = {{450000,350000},{900000,400000},{1150000,600000},{1550000, 850000}, {1950000, 1000000}};
 
 
-    static long[] ADMINS = {363906015051120641L, 384018076858974208L, 692088524962267217L, 506696814490288128L};
+    static long[] ADMINS = {506696814490288128L};
 
 
     static Random random = new Random();

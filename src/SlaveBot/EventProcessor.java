@@ -1100,7 +1100,7 @@ class EventProcessor {
                         case "vault":
                             internalSender.addMoney(Integer.parseInt(lowerArgs[1]) * 10000);
                             internalSender.removeItem(result, Integer.parseInt(lowerArgs[1]));
-                            BotUtils.sendMessage(channel, "You withdrew " + Integer.parseInt(lowerArgs[1]) * 10000 + " from " + Integer.parseInt(lowerArgs[1]) + "vaults");
+                            BotUtils.sendMessage(channel, "You withdrew " + Integer.parseInt(lowerArgs[1]) * 10000 + " from " + Integer.parseInt(lowerArgs[1]) + " vaults");
                             break;
                         default:
                             BotUtils.sendMessage(channel, "Cannot use multiple of this particular item");
@@ -1182,17 +1182,27 @@ class EventProcessor {
                                 break;
                             }
                             case "programmer's tool": {
-                                Tools.users.remove(internalSender);
-                                BotUtils.sendMessage(channel, "The tool malfunctions and alters your profile");
-                                User newUser = Tools.getUser(internalSender.id);
-                                newUser.level = 17;
-                                newUser.addMoney(120000);
-                                newUser.addItem(Market.getItem("programmer's blade"), 15);
-                                newUser.addItem(Market.getItem("air"), 6);
-                                newUser.addItem(Market.getItem("firewall"), 3);
-                                newUser.canWeekly();
-                                newUser.canDaily();
-                                Leveling.createLeaderboard();
+                                BotUtils.startBotFight();
+                                User bot = Tools.getUser(Main.client.getSelfId().get().asLong());
+                                Consumer<EmbedCreateSpec> embedCreateSpec = embed -> {
+                                    embed.setTitle(bot.username + "'s profile");
+                                    embed.addField("Level:", "" + bot.getLevel(), true);
+                                    embed.addField("Progress:", String.format("%.2f", (float) bot.getXp()) + "/" + bot.getXPRequired(), true);
+                                    embed.addField("\u200b", String.format("%.2f", (float) (bot.getXp() / bot.getXPRequired()) * 100) + "%", true);
+                                    embed.addField("Balance", ":moneybag: " + bot.getMoney(), true);
+                                    embed.addField("Health", ":heart: " + bot.getHealth(), true);
+                                    embed.addField("Shield", ":shield: " + bot.getShield(), true);
+                                    embed.addField("Kills:", "" + bot.kills, true);
+                                    embed.addField("Deaths:", "" + bot.deaths, true);
+                                    embed.addField("K/D Ratio:", String.format("%.2f", bot.deaths > 0 ? ((float)bot.kills)/((float)bot.deaths) : 0.00f), true);
+                                    embed.addField("Reputation", ":scales: " + String.format("%.2f", (float) bot.getReputation()), false);
+                                    embed.addField("Slaves:", "**Alive**: " + bot.slaveList.size(), true);
+                                    embed.addField("\u200b", "**Escaped**: " + bot.escapedSlaves, true);
+                                    embed.addField("\u200b", "**Dead**: " + bot.deadSlaves, true);
+                                };
+                                BotUtils.sendMessage(channel, "Bot fight started, you have 15 minutes to defeat it");
+                                new BotFightTimer(BotUtils.MILLIS_IN_MINUTE * 15, channel).start();
+                                BotUtils.sendEmbedSpec(channel, embedCreateSpec);
                                 break;
                             }
                             default:
@@ -1501,7 +1511,26 @@ class EventProcessor {
                 }
 
                 BotUtils.startBotFight();
-                BotUtils.sendMessage(channel, "Bot fight sucessfully started");
+                User bot = Tools.getUser(Main.client.getSelfId().get().asLong());
+                Consumer<EmbedCreateSpec> embedCreateSpec = embed -> {
+                    embed.setTitle(bot.username + "'s profile");
+                    embed.addField("Level:", "" + bot.getLevel(), true);
+                    embed.addField("Progress:", String.format("%.2f", (float) bot.getXp()) + "/" + bot.getXPRequired(), true);
+                    embed.addField("\u200b", String.format("%.2f", (float) (bot.getXp() / bot.getXPRequired()) * 100) + "%", true);
+                    embed.addField("Balance", ":moneybag: " + bot.getMoney(), true);
+                    embed.addField("Health", ":heart: " + bot.getHealth(), true);
+                    embed.addField("Shield", ":shield: " + bot.getShield(), true);
+                    embed.addField("Kills:", "" + bot.kills, true);
+                    embed.addField("Deaths:", "" + bot.deaths, true);
+                    embed.addField("K/D Ratio:", String.format("%.2f", bot.deaths > 0 ? ((float)bot.kills)/((float)bot.deaths) : 0.00f), true);
+                    embed.addField("Reputation", ":scales: " + String.format("%.2f", (float) bot.getReputation()), false);
+                    embed.addField("Slaves:", "**Alive**: " + bot.slaveList.size(), true);
+                    embed.addField("\u200b", "**Escaped**: " + bot.escapedSlaves, true);
+                    embed.addField("\u200b", "**Dead**: " + bot.deadSlaves, true);
+                };
+                BotUtils.sendMessage(channel, "Bot fight manual override successful, you have 15 minutes to defeat it");
+                new BotFightTimer(BotUtils.MILLIS_IN_MINUTE * 15, channel).start();
+                BotUtils.sendEmbedSpec(channel, embedCreateSpec);
                 break;
             }
             case "help":{

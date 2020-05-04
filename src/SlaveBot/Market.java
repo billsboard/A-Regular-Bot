@@ -69,7 +69,7 @@ public class Market implements Serializable {
                 new Item("Vietcong Uniform", "Increases escape rate",2500, new int[]{0}, "utility",10),
                 new Item("Underground Railroad", "Assists in freeing of slaves", 3000, new int[]{0}, "utility",10),
                 new Item("Ox", "Good for sacrificing to Zeus", 299, new int[]{0}, "utility", 10),
-                new Item("Programmer's tool", "`sudo make me a sandwich`",5000, new int[]{0}, "utility",25)
+                new Item("Programmer's tool", "`sudo make me a sandwich`",50000, new int[]{0}, "utility",19)
         };
         categories.put("Utilities", utilities);
 
