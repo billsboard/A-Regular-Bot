@@ -1459,45 +1459,11 @@ class EventProcessor {
             }
             case "eval":{
 
-                if(!BotUtils.isAdmin(internalSender.id)){
+                /*if(!BotUtils.isAdmin(internalSender.id)){
                     BotUtils.sendMessage(channel, "Eval disabled");
                     break;
                 }
-
-                BotUtils.sendMessage(channel, "Evaluating... This could take a while");
-                String data = "";
-                for (int i = 2; i < lowerArgs.length; i++) {
-                    data += rawArgs[i] + " ";
-                }
-                data = data.trim();
-                try {
-                    new EvalJVM().start(channel, lowerArgs[1], data);
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-
-                /*
-                if(internalSender.id == Main.client.getSelfId().get().asLong()){
-                    break;
-                }
-
-
-                String data = "";
-                for (int i = 2; i < lowerArgs.length; i++) {
-                    data += rawArgs[i] + " ";
-                }
-                data = data.trim();
-
-                System.out.println("Eval triggered by " + internalSender.username + ". Data:\n" + data);
-
-
-                PrintStream finalLogStream = logSteam;
-                try {
-                    new EvalThread().start(channel, lowerArgs[1], data);
-                } catch (Exception e) {
-                    System.out.println(e.getClass().getSimpleName());
-                    e.printStackTrace(finalLogStream);
-                }*/
+                */
                 break;
             }
             case "setinvincible":{
