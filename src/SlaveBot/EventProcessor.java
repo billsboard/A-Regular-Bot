@@ -523,6 +523,7 @@ class EventProcessor {
                     ArrayList<String> removeList = new ArrayList<>();
                     Consumer<EmbedCreateSpec> embedCreateSpec = embed -> {
                         embed.setTitle("Slave report for " + sender.getUsername());
+                        int sum = 0;
 
                         for (String s : internalSender.slaveList) {
                             if(BotUtils.random.nextInt(100) > 98){
@@ -533,9 +534,12 @@ class EventProcessor {
                             else{
                                 int money = BotUtils.random.nextInt(50);
                                 internalSender.addMoney(money);
+                                sum += money;
                                 embed.addField(s, "$" + money , true);
                             }
                         }
+
+                        embed.setDescription("Total money earned: `$" + sum + "`");
 
                         for (String s : removeList) {
                             internalSender.removeSlave(s);
@@ -1569,7 +1573,6 @@ class EventProcessor {
                     embed.addField("Slave Commands", helpText, false);
 
                     helpText = "`ping` - Pings the bot\n" +
-                            "`eval [language] [code]` - Attempts to run [code] as [language] code\n" +
                             "`help` - Displays this help text";
                     embed.addField("Other Commands", helpText, false);
                 };
