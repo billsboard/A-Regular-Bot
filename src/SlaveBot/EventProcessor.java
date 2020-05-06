@@ -860,11 +860,33 @@ class EventProcessor {
                             else if(target.getShield() > 0){
                                 BotUtils.sendMessage(channel, (Main.getUserByID(internalSender.id).getMention() + " hit the bot for " + dmg + " damage!\nIt's shield took the blow!"));
                                 internalSender.gainXP(channel, BotUtils.random.nextDouble() * 500 + 25);
+
+                                Item i = BotUtils.botUsableWeapons[BotUtils.random.nextInt(BotUtils.botUsableWeapons.length)];
+                                double returnDmg = i.getDamage();
+                                internalSender.damage(returnDmg);
+                                returnDmg *= 1 - (internalSender.defense / (internalSender.defense + 150));
+                                if(internalSender.health <= 0){
+                                    BotUtils.sendMessage(channel, "The bot retaliates with a(n) " + i.getName() + ". It hits for " + returnDmg + " damage which kills you");
+                                    internalSender.setHealth(internalSender.getMaxHealth());
+                                }
+                                else{
+                                    BotUtils.sendMessage(channel, "The bot retaliates with a(n) " + i.getName() + ". It hits you for " + returnDmg + " damage");
+                                }
                             }
                             else{
                                 BotUtils.sendMessage(channel, (Main.getUserByID(internalSender.id).getMention() + " hit the bot for " + dmg + " damage!\nIt have `"
                                         + String.format("%.2f", (float) target.getHealth()) + "`hp remaining"));
                                 internalSender.gainXP(channel, BotUtils.random.nextDouble() * 500 + 25);
+                                Item i = BotUtils.botUsableWeapons[BotUtils.random.nextInt(BotUtils.botUsableWeapons.length)];
+                                double returnDmg = i.getDamage();
+                                internalSender.damage(returnDmg);
+                                if(internalSender.health <= 0){
+                                    BotUtils.sendMessage(channel, "The bot retaliates by using a(n) " + i.getName() + ". It hits for " + returnDmg + " damage which kills you");
+                                    internalSender.setHealth(internalSender.getMaxHealth());
+                                }
+                                else{
+                                    BotUtils.sendMessage(channel, "The bot retaliates by using a(n) " + i.getName() + ". It hits you for " + returnDmg + " damage");
+                                }
                             }
                         }
                         internalSender.removeItem(weapon);
@@ -1483,22 +1505,6 @@ class EventProcessor {
                 BotUtils.sendMessage(channel, ":egg:");
                 break;
             }
-            case "resetbot":{
-                if(!LongStream.of(BotUtils.ADMINS).anyMatch(x -> x == internalSender.id)){
-                    BotUtils.sendMessage(channel, "Error: Permission denied");
-                    break;
-                }
-
-                User bot = Tools.getUser(Main.client.getSelfId().get().asLong());
-                Tools.users.remove(bot);
-                bot = Tools.getUser(bot.id);
-                bot.maxHealth = Integer.MAX_VALUE;
-                bot.setHealth(Integer.MAX_VALUE);
-                bot.setShield(Integer.MAX_VALUE);
-                bot.addMoney(400000);
-                BotUtils.sendMessage(channel, "Bot reset!");
-                break;
-            }
             case "upgradebank": case "bankupgrade":{
                 if(internalSender.getMoney() < BotUtils.bankUpgradeValues[internalSender.bankUpgrades][0]){
                     BotUtils.sendMessage(channel, "You do not have enough funds for tier " + (internalSender.bankUpgrades + 1) +
@@ -1539,6 +1545,13 @@ class EventProcessor {
                 BotUtils.sendMessage(channel, "Bot fight manual override successful, you have 15 minutes to defeat it");
                 new BotFightTimer(BotUtils.MILLIS_IN_MINUTE * 15, channel).start();
                 BotUtils.sendEmbedSpec(channel, embedCreateSpec);
+                break;
+            }
+            case "createleaderboard": {
+
+
+                Leveling.createLeaderboard();
+                BotUtils.sendMessage(channel, "Recreated the leaderboard!");
                 break;
             }
             case "help":{

@@ -50,6 +50,25 @@ class BotUtils {
 
     static int[][] bankUpgradeValues = {{450000,350000},{900000,400000},{1150000,600000},{1550000, 850000}, {1950000, 1000000}};
 
+    static Item[] botUsableWeapons = {
+            Market.getItem("Perfume"),
+            Market.getItem("Perfume"),
+            Market.getItem("German Rifle"),
+            Market.getItem("Programmer's Blade"),
+            Market.getItem("Air"),
+            Market.getItem("Spicy Air"),
+            Market.getItem("Programmer's Blade"),
+            Market.getItem("German rifle"),
+            Market.getItem("Air"),
+            Market.getItem("Lyndon's inventory"),
+            Market.getItem("Lyndon's inventory"),
+            Market.getItem("Spicy air"),
+            Market.getItem("Air"),
+            Market.getItem("Air"),
+            new Item("Viola", "Deadly sound", 1, new int[]{100,145,150,200,Integer.MAX_VALUE},"weapon"),
+            new Item("Viola", "Deadly sound", 1, new int[]{100,145,150,200,Integer.MAX_VALUE},"weapon"),
+            new Item("Administrator's Console", "Unchecked Power", 14000, new int[]{Integer.MAX_VALUE},"weapon")
+    };
 
     static long[] ADMINS = {506696814490288128L};
 
