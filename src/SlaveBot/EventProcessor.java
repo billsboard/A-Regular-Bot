@@ -866,7 +866,7 @@ class EventProcessor {
                                 internalSender.damage(returnDmg);
                                 returnDmg *= 1 - (internalSender.defense / (internalSender.defense + 150));
                                 if(internalSender.health <= 0){
-                                    BotUtils.sendMessage(channel, "The bot retaliates with a(n) " + i.getName() + ". It hits for " + returnDmg + " damage which kills you");
+                                    BotUtils.sendMessage(channel, "The bot retaliates with a(n) " + i.getName() + ". It hits for " + returnDmg + " damage, killing you");
                                     internalSender.setHealth(internalSender.getMaxHealth());
                                 }
                                 else{
@@ -881,7 +881,7 @@ class EventProcessor {
                                 double returnDmg = i.getDamage();
                                 internalSender.damage(returnDmg);
                                 if(internalSender.health <= 0){
-                                    BotUtils.sendMessage(channel, "The bot retaliates by using a(n) " + i.getName() + ". It hits for " + returnDmg + " damage which kills you");
+                                    BotUtils.sendMessage(channel, "The bot retaliates by using a(n) " + i.getName() + ". It hits for " + returnDmg + " damage, killing you");
                                     internalSender.setHealth(internalSender.getMaxHealth());
                                 }
                                 else{
