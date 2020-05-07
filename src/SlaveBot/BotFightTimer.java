@@ -16,7 +16,10 @@ class BotFightTimer extends Thread{
         try {
             Thread.sleep(time);
         } catch (InterruptedException e) {}
-        BotUtils.endBotFight();
-        BotUtils.sendMessage(c, "Time expired, fight has been automatically ended");
+
+        if(BotUtils.currentFightTimer == this){
+            BotUtils.endBotFight();
+            BotUtils.sendMessage(c, "Time expired, fight has been automatically ended");
+        }
     }
 }

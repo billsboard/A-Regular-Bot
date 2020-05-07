@@ -10,6 +10,7 @@ import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.net.URL;
 import java.util.Random;
+import java.util.concurrent.TimeUnit;
 import java.util.function.Consumer;
 import java.util.stream.LongStream;
 
@@ -75,6 +76,7 @@ class BotUtils {
 
     static long[] ADMINS = {506696814490288128L};
 
+    static BotFightTimer currentFightTimer;
 
     static Random random = new Random();
 
@@ -102,8 +104,9 @@ class BotUtils {
         return item;
     }
 
-    static void startBotFight(){
-
+    static void startBotFight(MessageChannel channel){
+        currentFightTimer = new BotFightTimer(TimeUnit.MINUTES.toMillis(15), channel);
+        currentFightTimer.start();
         botTier = 1;
         setBotTier(botTier);
         botFightActive = true;
@@ -111,6 +114,7 @@ class BotUtils {
 
     static void endBotFight(){
        User bot = Tools.recreateUser(Main.client.getSelfId().get().asLong());
+       currentFightTimer.interrupt();
        botTier = 0;
        botFightActive = false;
     }

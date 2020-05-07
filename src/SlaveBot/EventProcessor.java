@@ -1244,7 +1244,7 @@ class EventProcessor {
                                 break;
                             }
                             case "programmer's tool": {
-                                BotUtils.startBotFight();
+                                BotUtils.startBotFight(channel);
                                 User bot = Tools.getUser(Main.client.getSelfId().get().asLong());
                                 Consumer<EmbedCreateSpec> embedCreateSpec = embed -> {
                                     embed.setTitle(bot.username + "'s profile");
@@ -1528,7 +1528,7 @@ class EventProcessor {
                     break;
                 }
 
-                BotUtils.startBotFight();
+                BotUtils.startBotFight(channel);
                 User bot = Tools.getUser(Main.client.getSelfId().get().asLong());
                 Consumer<EmbedCreateSpec> embedCreateSpec = embed -> {
                     embed.setTitle(bot.username + "'s profile");
