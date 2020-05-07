@@ -1002,6 +1002,10 @@ class EventProcessor {
                     }
 
                     double dmg = weapon.getDamage();
+                    if(weapon.getName().equals("False Swipe")){ dmg = dmg * (1 - (target.defense / (target.defense + 150))) >= target.getHealth() ?
+                            (target.getHealth() - 1) / (1 - (target.defense / (target.defense + 150))) : dmg;
+                    }
+
                     if(dmg == 0){
                         BotUtils.sendMessage(channel, "Your attack missed!");
                         internalSender.gainXP(channel, BotUtils.random.nextDouble() * 100 + 25);

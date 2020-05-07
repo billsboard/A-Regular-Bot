@@ -51,6 +51,9 @@ class BotUtils {
     static int[][] bankUpgradeValues = {{450000,350000},{900000,400000},{1150000,600000},{1550000, 850000}, {1950000, 1000000}};
 
     static Item[] botUsableWeapons = {
+            Market.getItem("Actual sword"),
+            Market.getItem("Wooden Sword"),
+            Market.getItem("Stick"),
             Market.getItem("Perfume"),
             Market.getItem("Perfume"),
             Market.getItem("German Rifle"),

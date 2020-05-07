@@ -27,8 +27,9 @@ public class Market implements Serializable {
                 new Item("Perfume", "Strangely effective", 1000, new int[]{0,0,0,0,0,50,75,100,100}, "weapon",10),
                 new Item("Programmer's Blade", "`rm -rf /`", 5000, new int[]{100,100,114,125,125,136,139,149,150,159,175,193,199,200,250,12000,Integer.MAX_VALUE}, "weapon", 15),
                 new Item("Air", "saBOTage's favourite weapon", 7500, new int[]{1,100,123,253,200,190,320,195,200,384,420,320,295,600,15000,Integer.MAX_VALUE}, "weapon", 17),
+                new Item("False Swipe", "Leaves the target at 1hp", 2700, new int[]{85,100,76,120,165,95,86,88,89,95,64,99,89}, "weapon", 18),
                 new Item("Spicy Stick", "Basically a horn drill", 17500, new int[]{0,0,0,0,0,0,0,0,1000,100000,100000,Integer.MAX_VALUE,Integer.MAX_VALUE,Integer.MAX_VALUE}, "weapon", 18),
-                new Item("Spicy Air", "Seasoning, perhaps?", 12500, new int[]{0,200,250,340,472,475,501,10000,15000,12000,Integer.MAX_VALUE,730}, "weapon", 20),
+                new Item("Spicy Air", "Seasoning, perhaps?", 12500, new int[]{100,200,250,340,472,475,501,10000,15000,12000,Integer.MAX_VALUE,730}, "weapon", 20),
                 new Item("Lyndon's Inventory", "Contains NSFW content", 8000, new int[]{325,402,431,425,425,452,340,472,475,501,503,321,352,Integer.MAX_VALUE,730}, "weapon", 21),
                 new Item("Missile", "Like the name suggests", 2000, new int[]{0}, "weapon", 22),
                 new Item("Thot Slayer", "Repels Marie Antoinette", 9001, new int[]{0,350,303,405,857,921,392,349,912,413,413,413,531,446,652,20000,Integer.MAX_VALUE}, "weapon", 24)
