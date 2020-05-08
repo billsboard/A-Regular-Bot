@@ -248,6 +248,24 @@ class EventProcessor {
                 }
                 break;
             }
+            case "airdrop": case "drop":{
+                if(internalSender.canDrop()){
+                    Item item = LootBox.GOOD_LOOT[BotUtils.random.nextInt(LootBox.GOOD_LOOT.length)];
+                    if(item!=null){
+                        internalSender.addItem(item);
+                        BotUtils.sendMessage(channel, "You found a(n) " + item.getName() + " out of the crate!");
+                    }
+                    else {
+                        int money = BotUtils.random.nextInt(10000) + 5000;
+                        internalSender.addMoney(money);
+                        BotUtils.sendMessage(channel, "You found $" + money + " in the crate!");
+                    }
+                }
+                else {
+                    BotUtils.sendRatelimitMessage(channel, BotUtils.dropTime - (new Date().getTime() - internalSender.lastDrop));
+                }
+                break;
+            }
             case "leaderboard":{
                 Leveling.displayLeaderBoard(channel, internalSender);
                 break;

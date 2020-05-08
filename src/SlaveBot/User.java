@@ -18,7 +18,7 @@ public class User implements Serializable {
     int level = 0;
     private double xp = 0.0;
 
-    long lastDaily, lastEscape, lastCrime, lastSlave, lastAttack, lastHeal, lastWork, lastWeekly, lastSlaveWork, lastLoot;
+    long lastDaily, lastEscape, lastCrime, lastSlave, lastAttack, lastHeal, lastWork, lastWeekly, lastSlaveWork, lastLoot, lastDrop;
 
     int escapedSlaves = 0, deadSlaves = 0;
 
@@ -98,6 +98,16 @@ public class User implements Serializable {
         Date date2 = new Date();
         if(Math.abs(date1.getTime() - date2.getTime()) >= BotUtils.lootTime){
             lastLoot = date2.getTime();
+            return true;
+        }
+        return false;
+    }
+
+    boolean canDrop(){
+        Date date1 = new Date(lastDrop);
+        Date date2 = new Date();
+        if(Math.abs(date1.getTime() - date2.getTime()) >= BotUtils.dropTime){
+            lastDrop = date2.getTime();
             return true;
         }
         return false;

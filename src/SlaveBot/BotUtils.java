@@ -30,7 +30,8 @@ class BotUtils {
     static long crimeTime = BotUtils.MILLIS_IN_MINUTE * 6;
     static long weeklyTime = BotUtils.MILLIS_IN_HOUR * 24 * 7;
     static long slaveWorkTime = BotUtils.MILLIS_IN_MINUTE / 3;
-    static long lootTime = (long) (BotUtils.MILLIS_IN_MINUTE * 13.7);
+    static long lootTime = (BotUtils.MILLIS_IN_MINUTE * 10);
+    static long dropTime = (BotUtils.MILLIS_IN_HOUR);
 
     static boolean botFightActive = false;
     static int botTier = 0;

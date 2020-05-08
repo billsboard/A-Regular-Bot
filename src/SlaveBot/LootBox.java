@@ -113,7 +113,26 @@ class LootBox {
             new Item("Nugget", "A chunk of gold", 40000, new int[]{}, "utility"),
             new Item("Nugget", "A chunk of gold", 40000, new int[]{}, "utility"),
             new Item("Nugget", "A chunk of gold", 40000, new int[]{}, "utility"),
+            new Item("Command Prompt", "Linux > Windows", 10000, new int[]{100000,500000,Integer.MAX_VALUE/2}, "weapon"),
 
+    };
+
+    static Item[] GOOD_LOOT = {
+            Market.getItem("air"),
+            Market.getItem("spicy air"),
+            Market.getItem("spicy stick"),
+            Market.getItem("spicy stick"),
+            new Item("Detect", "Marowak protected itself!", 32000, new int[]{1500,2500,5000}, "shield"),
+            new Item("Detect", "Marowak protected itself!", 32000, new int[]{1500,2500,5000}, "shield"),
+            new Item("Nugget", "A chunk of gold", 40000, new int[]{}, "utility"),
+            new Item("Nugget", "A chunk of gold", 40000, new int[]{}, "utility"),
+            new Item("Administrator's Console", "Unchecked Power", 14000, new int[]{Integer.MAX_VALUE},"weapon"),
+            new Item("Administrator's Console", "Unchecked Power", 14000, new int[]{Integer.MAX_VALUE},"weapon"),
+            new Item("Administrator's Console", "Unchecked Power", 14000, new int[]{Integer.MAX_VALUE},"weapon"),
+            new Item("Command Prompt", "Linux > Windows", 10000, new int[]{100000,500000,Integer.MAX_VALUE/2}, "weapon"),
+            new Item("Command Prompt", "Linux > Windows", 10000, new int[]{100000,500000,Integer.MAX_VALUE/2}, "weapon"),
+            new Item("Command Prompt", "Linux > Windows", 10000, new int[]{100000,500000,Integer.MAX_VALUE/2}, "weapon"),
+            new Item("Command Prompt", "Linux > Windows", 10000, new int[]{100000,500000,Integer.MAX_VALUE/2}, "weapon")
     };
 
     static Item getItem(String item){
@@ -125,4 +144,16 @@ class LootBox {
         }
         return null;
     }
+
+    static Item getGItem(String item){
+        for (Item i : GOOD_LOOT) {
+            if(i == null){
+                //fall through
+            }
+            else if(i.getName().equalsIgnoreCase(item)) return i;
+        }
+        return null;
+    }
+
+
 }
