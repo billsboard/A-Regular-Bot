@@ -127,6 +127,7 @@ class BotUtils {
         Tools.users.remove(bot);
         bot = Tools.getUser(bot.id);
         bot.maxHealth = botTiers[tier].health;
+        bot.level = tier;
         bot.setHealth(bot.maxHealth);
         bot.defense = botTiers[tier].def;
         bot.setShield(botTiers[tier].shield);

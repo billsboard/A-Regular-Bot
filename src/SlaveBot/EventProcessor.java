@@ -544,13 +544,13 @@ class EventProcessor {
                         int sum = 0;
 
                         for (String s : internalSender.slaveList) {
-                            if(BotUtils.random.nextInt(100) > 98){
+                            if(BotUtils.random.nextInt(200) > 199){
                                 removeList.add(s);
                                 embed.addField(new String(s),  "Died of exhaustion", true);
                                 internalSender.deadSlaves++;
                             }
                             else{
-                                int money = BotUtils.random.nextInt(50);
+                                int money = BotUtils.random.nextInt(200) + 25;
                                 internalSender.addMoney(money);
                                 sum += money;
                                 embed.addField(s, "$" + money , true);
@@ -602,6 +602,10 @@ class EventProcessor {
                     BotUtils.sendMessage(channel, "You severely injured yourself tying to enslave yourself. Your slaves escaped in the confusion.");
                     internalSender.slaveList = new ArrayList<>();
                     internalSender.inventory.remove(internalSender.getItem(new Item("Slave", "A healthy, working slave", 200)));
+                    break;
+                }
+                if(internalSender.slaveList.size() >= 20){
+                    BotUtils.sendMessage(channel, "You may only have a maximum of 20 slaves!");
                     break;
                 }
 
@@ -1583,7 +1587,8 @@ class EventProcessor {
                     String helpText = "`profile [user]` - Displays your profile or [user]'s profile if specified\n" +
                             "`money` - Displays your money\n" +
                             "`inventory` - Displays your inventory\n" +
-                            "`loot` - Gives you a random item";
+                            "`loot` - Gives you a random item\n" +
+                            "`airdrop` - Gives you a random item";
                     embed.addField("Profile Commands", helpText, false);
 
                     helpText = "`daily` - Claims your daily reward\n" +
