@@ -33,6 +33,7 @@ class BotUtils {
     static long lootTime = (BotUtils.MILLIS_IN_MINUTE * 10);
     static long dropTime = (BotUtils.MILLIS_IN_HOUR);
 
+
     static boolean botFightActive = false;
     static int botTier = 0;
     static BotTier[] botTiers = {
@@ -78,6 +79,7 @@ class BotUtils {
     static long[] ADMINS = {506696814490288128L};
 
     static BotFightTimer currentFightTimer;
+    static long fightChannelID;
 
     static Random random = new Random();
 
@@ -107,6 +109,7 @@ class BotUtils {
 
     static void startBotFight(MessageChannel channel){
         currentFightTimer = new BotFightTimer(TimeUnit.MINUTES.toMillis(15), channel);
+        fightChannelID = channel.getId().asLong();
         currentFightTimer.start();
         botTier = 1;
         setBotTier(botTier);

@@ -801,6 +801,10 @@ class EventProcessor {
                 }
 
                 if(target.id == Main.client.getSelfId().get().asLong() && BotUtils.botFightActive){
+                    if(channel.getId().asLong() != BotUtils.fightChannelID){
+                        BotUtils.sendMessage(channel, "Cannot attack bot from a different channel. \nUse channel <#" + BotUtils.fightChannelID + ">");
+                        break;
+                    }
                     if(weapon.isUtility()) {
                         switch (weapon.getName()) {
                             case "Armor Piercing Bullet": {
@@ -1266,6 +1270,15 @@ class EventProcessor {
                                 break;
                             }
                             case "programmer's tool": {
+                                if(guild == null || guild.getMembers().collectList().block().size() < 5){
+                                    BotUtils.sendMessage(channel, "Error: Cannot start fight in private channel");
+                                    return;
+                                }
+                                else if(BotUtils.botFightActive){
+                                    BotUtils.sendMessage(channel, "Error: Another bot fight is currently active");
+                                    return;
+                                }
+
                                 BotUtils.startBotFight(channel);
                                 User bot = Tools.getUser(Main.client.getSelfId().get().asLong());
                                 Consumer<EmbedCreateSpec> embedCreateSpec = embed -> {
@@ -1578,6 +1591,10 @@ class EventProcessor {
 
                 Leveling.createLeaderboard();
                 BotUtils.sendMessage(channel, "Recreated the leaderboard!");
+                break;
+            }
+            case "debug":{
+                BotUtils.sendMessage(channel, "" + guild);
                 break;
             }
             case "help":{

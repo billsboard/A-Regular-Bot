@@ -60,6 +60,7 @@ public class User implements Serializable {
             c.set(Calendar.MINUTE, 0);
             c.set(Calendar.SECOND, 0);
             c.set(Calendar.MILLISECOND, 0);
+            c.set(Calendar.DAY_OF_WEEK, c.getFirstDayOfWeek());
             c.setTimeZone(TimeZone.getTimeZone("PST"));
             lastWeekly =  c.getTime().getTime();
             return true;
@@ -107,7 +108,11 @@ public class User implements Serializable {
         Date date1 = new Date(lastDrop);
         Date date2 = new Date();
         if(Math.abs(date1.getTime() - date2.getTime()) >= BotUtils.dropTime){
-            lastDrop = date2.getTime();
+            Calendar c = new GregorianCalendar();
+            c.clear(Calendar.MINUTE);
+            c.clear(Calendar.SECOND);
+            c.clear(Calendar.MILLISECOND);
+            lastDrop = c.getTimeInMillis();
             return true;
         }
         return false;
