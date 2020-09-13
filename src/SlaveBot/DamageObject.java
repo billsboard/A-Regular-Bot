@@ -3,6 +3,7 @@ package SlaveBot;
 import SlaveBot.Traits.Trait;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 
 class DamageObject {
 
@@ -89,32 +90,51 @@ class DamageObject {
         if(defend.buffs == null) defend.buffs = new ArrayList<>();
 
 
-        for (Trait t : attack.buffs) {
+        Iterator<Trait> attackIt = attack.buffs.iterator();
+        while (attackIt.hasNext()){
+            Trait t = attackIt.next();
             if(t.checkEnable(item, "ATTACK")){
                 switch (t.name.toLowerCase()){
                     case "pokeproof":{
                         generalDamageModifier *= 1.5;
+                        messages.append(attack.mentionString() + "'s Pokeproof buffed the damage!\n");
                         break;
                     }
                 }
 
                 t.decrementDurability();
+                if(t.uses <= 0 && t.isBreakable()){
+                    attackIt.remove();
+                }
             }
+
         }
 
 
-        for (Trait t : defend.buffs) {
+
+        Iterator<Trait> defendIt = defend.buffs.iterator();
+        while (defendIt.hasNext()){
+            Trait t = defendIt.next();
             if(t.checkEnable(item, "DEFEND")){
                 switch (t.name.toLowerCase()){
                     case "pokeproof":{
                         generalDamageModifier *= 0;
-                        messages.append("Pokeproof blocked the attack!");
+                        messages.append(defend.mentionString() + "'s Pokeproof blocked the attack!\n");
+                        break;
+                    }
+                    case "gas mask":{
+                        generalDamageModifier *= 0;
+                        messages.append(defend.mentionString() + "'s gas mask protected them!\n");
                         break;
                     }
                 }
 
                 t.decrementDurability();
+                if(t.uses <= 0 && t.isBreakable()){
+                    defendIt.remove();
+                }
             }
+
         }
 
 

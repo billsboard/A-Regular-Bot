@@ -15,9 +15,10 @@ public class CorneredFoxTrait extends Trait {
     public CorneredFoxTrait(User u) {
         super(u);
 
-        type = Types.DEFEND_UNBREAKABLE;
+        type = Types.DEFENSE;
         name = "Cornered Fox";
         desc = "+35 base defense\n+15% defense multiplier";
+        uses = 30;
     }
 
     @Override
@@ -34,6 +35,10 @@ public class CorneredFoxTrait extends Trait {
 
     @Override
     public boolean checkEnable(Item item, String attackType) {
+        if(attackType.equals("DEFEND")){
+            return true;
+        }
+
         return false;
     }
 

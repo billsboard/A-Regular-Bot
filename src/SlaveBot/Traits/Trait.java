@@ -34,12 +34,13 @@ public abstract class Trait implements Serializable {
         else{
             if(--uses <= 0){
                 onDisable();
+                //attachedUser.removeTrait(this);
             }
         }
     }
 
-    boolean isBreakable(){
-        return type == Types.DEFEND_UNBREAKABLE || type == Types.ATTACK_UNBREAKABLE || type == Types.PERMANENT;
+    public boolean isBreakable(){
+        return !(type == Types.DEFEND_UNBREAKABLE || type == Types.ATTACK_UNBREAKABLE || type == Types.PERMANENT);
     }
 
     @Override

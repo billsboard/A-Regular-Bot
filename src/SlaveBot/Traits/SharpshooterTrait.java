@@ -7,13 +7,13 @@ public class SharpshooterTrait extends Trait {
 
     private static final long serialVersionUID = 1115660725742063529L;
 
-    SharpshooterTrait(User u) {
+    public SharpshooterTrait(User u) {
         super(u);
 
         type = Types.ATTACK;
         name = "Sharpshooter";
         desc = "+2x Accuracy\n+35% Critical Hit Chance\n+1.5x Critical Hit Damage";
-        uses = 1;
+        uses = 20;
     }
 
     @Override

@@ -16,22 +16,27 @@ public class YasuoTrait extends Trait{
         type = Types.ATTACK_UNBREAKABLE;
         name = "Yasuo";
         desc = "+2.0x Critical Chance\n-20% Critical Damage";
+        uses = 25;
     }
 
     @Override
     public void onEnable() {
-        attachedUser.baseCrit *= 2;
+        attachedUser.critModifier *= 2;
         attachedUser.critDamageModifier *= 0.8;
     }
 
     @Override
     public void onDisable() {
-        attachedUser.baseCrit /= 2;
+        attachedUser.critModifier /= 2;
         attachedUser.critDamageModifier /= 0.8;
     }
 
     @Override
     public boolean checkEnable(Item item, String attackType) {
+        if(attackType.equals("ATTACK")){
+            return true;
+        }
+
         return false;
     }
 }

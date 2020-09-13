@@ -45,10 +45,10 @@ public class User implements Serializable {
     ArrayList<String> slaveList = new ArrayList<>();
     ArrayList<Long> idList = new ArrayList<>();
 
-    double strengthMultiplier = 1;
+    public double strengthMultiplier = 1;
     public double defenseMultiplier = 1;
     double escapeMultiplier = 1;
-    double accuracyModifier = 1;
+    public double accuracyModifier = 1;
     double captureModifier = 1;
     public double critModifier = 1;
     double baseStrength = 10;
@@ -467,7 +467,7 @@ public class User implements Serializable {
         t.onEnable();
     }
 
-    void removeTrait(Trait t){
+    public void removeTrait(Trait t){
         if(buffs.contains(t)){
             buffs.remove(t);
             t.onDisable();

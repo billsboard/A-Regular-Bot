@@ -114,7 +114,7 @@ class LootBox {
             new Item("Nugget", "A chunk of gold", 40000, new int[]{}, "utility"),
             new Item("Nugget", "A chunk of gold", 40000, new int[]{}, "utility"),
             new Item("Command Prompt", "Linux > Windows", 10000, new int[]{100000,500000,Integer.MAX_VALUE/2}, "weapon"),
-
+            new Item("Trait Voucher", "Gives one free trait roll", 0, null, "utility", 0)
     };
 
     static Item[] GOOD_LOOT = {

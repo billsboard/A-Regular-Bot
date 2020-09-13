@@ -26,10 +26,7 @@ import java.io.PrintStream;
 import java.lang.annotation.Target;
 import java.lang.management.ManagementFactory;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Iterator;
+import java.util.*;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
@@ -65,7 +62,7 @@ class EventProcessor {
                 onMessageReceived(messageCreateEvent.getMessage());
             }catch (Exception e){
                 System.out.println(e.getClass().getSimpleName());
-                e.printStackTrace();
+                e.printStackTrace(finalLogSteam);
             }
         });
     }
@@ -188,8 +185,8 @@ class EventProcessor {
                 break;
             }
             case "rolltrait":{
-                if(internalSender.money < 250000){
-                    BotUtils.sendMessage(channel, "Rolling traits requires $250000");
+                if(internalSender.money < 45000){
+                    BotUtils.sendMessage(channel, "Rolling traits requires $45000");
                 }
                 else if(internalSender.buffs.size() >= 3){
                     BotUtils.sendMessage(channel, "Cannot roll traits when more than 3 traits are active");
@@ -197,7 +194,7 @@ class EventProcessor {
                 else{
                     Trait t = Tools.rollTrait(internalSender);
                     internalSender.applyTrait(t);
-                    internalSender.removeMoney(250000);
+                    internalSender.removeMoney(45000);
 
                     BotUtils.sendMessage(channel, "You have rolled trait: " + t.name + "!");
 
@@ -210,16 +207,21 @@ class EventProcessor {
                     Consumer<EmbedCreateSpec> embedCreateSpec = embed -> {
                         embed.setTitle(sender.getUsername() + "'s stats");
                         embed.addField("Health", ":heart: " + internalSender.getHealth() + "/" + internalSender.getMaxHealth(), false);
-                        embed.addField("Strength", ":crossed_swords: " + internalSender.baseStrength, true);
-                        embed.addField("Defense", ":shield: " + internalSender.baseDefense, true);
-                        embed.addField("Critical Hit Chance", ":dagger: " + internalSender.baseCrit + "%", true);
+                        embed.addField("Strength", ":crossed_swords: " + String.format("%.2f", internalSender.baseStrength * internalSender.strengthMultiplier), true);
+                        embed.addField("Defense", ":shield: " + String.format("%.2f", internalSender.baseDefense * internalSender.defenseMultiplier), true);
+                        embed.addField("Critical Hit Chance", ":dagger: " + String.format("%.2f", internalSender.baseCrit * internalSender.critModifier) + "%", true);
 
 
 
                         embed.addField("**Active Traits**", "Limit of 3 active traits", false);
 
                         for (Trait t : internalSender.buffs) {
-                            embed.addField(t.name, t.desc, true);
+                            String s = t.desc;
+                            if(t.isBreakable()){
+                                s += "\n" + t.uses + " durability remaining";
+                            }
+
+                            embed.addField(t.name, s, true);
                         }
 
 
@@ -236,11 +238,20 @@ class EventProcessor {
                     Consumer<EmbedCreateSpec> embedCreateSpec = embed -> {
                         embed.setTitle(target.username + "'s stats");
                         embed.addField("Health", ":heart: " + target.getHealth() + "/" + target.getMaxHealth(), false);
-                        embed.addField("Strength", ":crossed_swords: " + target.baseStrength, true);
-                        embed.addField("Defense", ":shield: " + target.baseDefense, true);
-                        embed.addField("Critical Hit Chance", ":dagger: " + target.baseCrit + "%", true);
+                        embed.addField("Strength", ":crossed_swords: " + String.format("%.2f", target.baseStrength * target.strengthMultiplier), true);
+                        embed.addField("Defense", ":shield: " + String.format("%.2f", target.baseDefense * target.defenseMultiplier), true);
+                        embed.addField("Critical Hit Chance", ":dagger: " + String.format("%.2f", target.baseCrit * target.critModifier) + "%", true);
 
-                        embed.addField("Active Traits", "None", false);
+                        embed.addField("**Active Traits**", "Limit of 3 active traits", false);
+
+                        for (Trait t : target.buffs) {
+                            String s = t.desc;
+                            if(t.isBreakable()){
+                                s += "\n" + t.uses + " durability remaining";
+                            }
+
+                            embed.addField(t.name, s, true);
+                        }
                     };
                     BotUtils.sendEmbedSpec(channel, embedCreateSpec);
                 }
@@ -261,7 +272,8 @@ class EventProcessor {
                 if(internalSender.canWeekly()){
                     internalSender.addMoney(90000);
                     internalSender.gainXP(channel, 200);
-                    BotUtils.sendMessage(channel, "You claimed your daily reward of 90000 Canadian Pesos and 200 XP");
+                    BotUtils.sendMessage(channel, "You claimed your daily reward of 90000 Canadian Pesos and 200 XP. A trait voucher has also been given to you.");
+                    internalSender.addItem(new Item("Trait Voucher", "Gives one free trait roll", 0, null, "utility", 0));
                 }
                 else {
                     BotUtils.sendRatelimitMessage(channel, BotUtils.weeklyTime - (new Date().getTime() - internalSender.lastWeekly));
@@ -848,21 +860,6 @@ class EventProcessor {
                     }
                     if(weapon.isUtility()) {
                         switch (weapon.getName()) {
-                            case "Armor Piercing Bullet": {
-                                int damage = weapon.getDamage();
-                                if (target.getShield() <= 0) {
-                                    BotUtils.sendMessage(channel, "Target had no shield to destroy");
-                                } else {
-                                    target.setShield(target.getShield() - damage < 0 ? 0 : target.getShield() - damage);
-                                    String output = sender.getMention() + " hit <@" + target.id + ">'s shield for `" + damage + "` damage\n";
-                                    output += target.getShield() <= 0 ? "Their shield has been destroyed" : "They have `" + target.getShield() + "` shield left";
-
-                                    BotUtils.sendMessage(channel, output);
-
-
-                                }
-                                break;
-                            }
                             default:{
                                 BotUtils.sendMessage(channel, "Bot fight active, non-damaging items cannot be used against it");
                                 break;
@@ -873,88 +870,44 @@ class EventProcessor {
                         BotUtils.sendMessage(channel, weapon.getName() + " is not a weapon!");
                     }
                     else{
-                        double dmg = weapon.getDamage();
-                        if(dmg == 0){
-                            BotUtils.sendMessage(channel, "Your attack missed!");
-                            internalSender.gainXP(channel, BotUtils.random.nextDouble() * 100 + 25);
-                        }
-                        else{
-                            //dmg = dmg * 1.8 > Integer.MAX_VALUE ? Integer.MAX_VALUE : dmg * 1.8;
-                            target.damage(dmg);
-                            dmg *= 1 - (target.defense / (target.defense + 150));
-                            dmg = Double.parseDouble(String.format("%.2f", (float) dmg));
-                            if(target.getHealth() <= 0){
-                                BotUtils.sendMessage(channel, (Main.getUserByID(internalSender.id).getMention() +" hit the bot for " + dmg + " damage!\nIt has been killed!"));
-                                int tempInt = ((long) 3)* ((long) target.money) > Integer.MAX_VALUE ? Integer.MAX_VALUE : 3 * target.getMoney();
-                                int moneyGained = BotUtils.random.nextInt(((tempInt) / 4)+1) + (target.money / 4);
+                        User bot = Tools.getUser(Main.client.getSelfId().get().asLong());
+                        Tools.damageCalculation(channel, internalSender, bot, (Weapon) weapon);
 
-                                BotUtils.sendMessage(channel, (Main.getUserByID(internalSender.id).getMention() + " managed to loot $" + moneyGained + " from the bot\n"));
+                        if(target.getHealth() <= 0){
 
-                                internalSender.addMoney(moneyGained);
-                                internalSender.kills++;
-                                target.deaths++;
-                                target.money = 0;
-                                internalSender.gainXP(channel, BotUtils.random.nextDouble() * 1500 + 825);
+                            bot.money = 0;
+                            //internalSender.gainXP(channel, BotUtils.random.nextDouble() * 1500 + 825);
 
-                                BotUtils.botTier++;
-                                if(BotUtils.botTier >= BotUtils.botTiers.length){
-                                    BotUtils.sendMessage(channel, "The bot fight has concluded. Please wait for a new one to start or summon one with a programmer's tool");
-                                    BotUtils.endBotFight();
-                                }
-                                else{
-                                    BotUtils.sendMessage(channel, "Tier " + (BotUtils.botTier - 1) + " defeated! Next tier commencing...");
-                                    BotUtils.setBotTier(BotUtils.botTier);
-                                    User bot = Tools.getUser(Main.client.getSelfId().get().asLong());
-                                    Consumer<EmbedCreateSpec> embedCreateSpec = embed -> {
-                                        embed.setTitle(bot.username + "'s profile");
-                                        embed.addField("Level:", "" + bot.getLevel(), true);
-                                        embed.addField("Progress:", String.format("%.2f", (float) bot.getXp()) + "/" + bot.getXPRequired(), true);
-                                        embed.addField("\u200b", String.format("%.2f", (float) (bot.getXp() / bot.getXPRequired()) * 100) + "%", true);
-                                        embed.addField("Balance", ":moneybag: " + bot.getMoney(), true);
-                                        embed.addField("Health", ":heart: " + bot.getHealth(), true);
-                                        embed.addField("Shield", ":shield: " + bot.getShield(), true);
-                                        embed.addField("Kills:", "" + bot.kills, true);
-                                        embed.addField("Deaths:", "" + bot.deaths, true);
-                                        embed.addField("K/D Ratio:", String.format("%.2f", bot.deaths > 0 ? ((float)bot.kills)/((float)bot.deaths) : 0.00f), true);
-                                        embed.addField("Reputation", ":scales: " + String.format("%.2f", (float) bot.getReputation()), false);
-                                        embed.addField("Slaves:", "**Alive**: " + bot.slaveList.size(), true);
-                                        embed.addField("\u200b", "**Escaped**: " + bot.escapedSlaves, true);
-                                        embed.addField("\u200b", "**Dead**: " + bot.deadSlaves, true);
-                                    };
-                                    BotUtils.sendEmbedSpec(channel,embedCreateSpec);
-                                }
-                            }
-                            else if(target.getShield() > 0){
-                                BotUtils.sendMessage(channel, (Main.getUserByID(internalSender.id).getMention() + " hit the bot for " + dmg + " damage!\nIt's shield took the blow!"));
-                                internalSender.gainXP(channel, BotUtils.random.nextDouble() * 500 + 25);
-
-                                Item i = BotUtils.botUsableWeapons[BotUtils.random.nextInt(BotUtils.botUsableWeapons.length)];
-                                double returnDmg = i.getDamage();
-                                internalSender.damage(returnDmg);
-                                returnDmg *= 1 - (internalSender.defense / (internalSender.defense + 150));
-                                if(internalSender.health <= 0){
-                                    BotUtils.sendMessage(channel, "The bot retaliates with a(n) " + i.getName() + ". It hits for " + returnDmg + " damage, killing you");
-                                    internalSender.setHealth(internalSender.getMaxHealth());
-                                }
-                                else{
-                                    BotUtils.sendMessage(channel, "The bot retaliates with a(n) " + i.getName() + ". It hits you for " + returnDmg + " damage");
-                                }
+                            BotUtils.botTier++;
+                            if(BotUtils.botTier >= BotUtils.botTiers.length){
+                                BotUtils.sendMessage(channel, "The bot fight has concluded. Please wait for a new one to start or summon one with a programmer's tool");
+                                BotUtils.endBotFight();
                             }
                             else{
-                                BotUtils.sendMessage(channel, (Main.getUserByID(internalSender.id).getMention() + " hit the bot for " + dmg + " damage!\nIt have `"
-                                        + String.format("%.2f", (float) target.getHealth()) + "`hp remaining"));
-                                internalSender.gainXP(channel, BotUtils.random.nextDouble() * 500 + 25);
-                                Item i = BotUtils.botUsableWeapons[BotUtils.random.nextInt(BotUtils.botUsableWeapons.length)];
-                                double returnDmg = i.getDamage();
-                                internalSender.damage(returnDmg);
-                                if(internalSender.health <= 0){
-                                    BotUtils.sendMessage(channel, "The bot retaliates by using a(n) " + i.getName() + ". It hits for " + returnDmg + " damage, killing you");
-                                    internalSender.setHealth(internalSender.getMaxHealth());
-                                }
-                                else{
-                                    BotUtils.sendMessage(channel, "The bot retaliates by using a(n) " + i.getName() + ". It hits you for " + returnDmg + " damage");
-                                }
+                                BotUtils.sendMessage(channel, "Tier " + (BotUtils.botTier - 1) + " defeated! Next tier commencing...");
+                                BotUtils.setBotTier(BotUtils.botTier);
+                                Consumer<EmbedCreateSpec> embedCreateSpec = embed -> {
+                                    embed.setTitle(bot.username + "'s profile");
+                                    embed.addField("Level:", "" + (bot.getLevel() - 100), true);
+                                    embed.addField("Progress:", 0 + "/" + 0, true);
+                                    embed.addField("\u200b", "0%", true);
+                                    embed.addField("Balance", ":moneybag: " + bot.getMoney(), true);
+                                    embed.addField("Health", ":heart: " + bot.getHealth(), true);
+                                    embed.addField("Shield", ":shield: " + bot.getShield(), true);
+                                    embed.addField("Kills:", "" + bot.kills, true);
+                                    embed.addField("Deaths:", "" + bot.deaths, true);
+                                    embed.addField("K/D Ratio:", String.format("%.2f", bot.deaths > 0 ? ((float)bot.kills)/((float)bot.deaths) : 0.00f), true);
+                                    embed.addField("Reputation", ":scales: " + String.format("%.2f", (float) bot.getReputation()), false);
+                                    embed.addField("Slaves:", "**Alive**: " + bot.slaveList.size(), true);
+                                    embed.addField("\u200b", "**Escaped**: " + bot.escapedSlaves, true);
+                                    embed.addField("\u200b", "**Dead**: " + bot.deadSlaves, true);
+                                };
+                                BotUtils.sendEmbedSpec(channel,embedCreateSpec);
                             }
+                        }
+                        else{
+                            Weapon w = (Weapon) BotUtils.botUsableWeapons[BotUtils.random.nextInt(BotUtils.botUsableWeapons.length)];
+                            Tools.damageCalculation(channel, bot, internalSender, w);
                         }
                         internalSender.removeItem(weapon);
                     }
@@ -1210,11 +1163,15 @@ class EventProcessor {
                 }
                 else {
 
+                    boolean noRemove = false;
+
                     String item = "";
                     for (int i = 1; i < lowerArgs.length; i++) {
                         item += lowerArgs[i] + " ";
                     }
                     item = item.trim();
+
+                    if(item.toLowerCase().startsWith("trait remover")) item = "trait remover";
 
                     Item result = BotUtils.getItem(item);
                     if (result == null) {
@@ -1295,9 +1252,9 @@ class EventProcessor {
                                 User bot = Tools.getUser(Main.client.getSelfId().get().asLong());
                                 Consumer<EmbedCreateSpec> embedCreateSpec = embed -> {
                                     embed.setTitle(bot.username + "'s profile");
-                                    embed.addField("Level:", "" + bot.getLevel(), true);
-                                    embed.addField("Progress:", String.format("%.2f", (float) bot.getXp()) + "/" + bot.getXPRequired(), true);
-                                    embed.addField("\u200b", String.format("%.2f", (float) (bot.getXp() / bot.getXPRequired()) * 100) + "%", true);
+                                    embed.addField("Level:", "" + (bot.getLevel() - 100), true);
+                                    embed.addField("Progress:", "0/0", true);
+                                    embed.addField("\u200b", "0%", true);
                                     embed.addField("Balance", ":moneybag: " + bot.getMoney(), true);
                                     embed.addField("Health", ":heart: " + bot.getHealth(), true);
                                     embed.addField("Shield", ":shield: " + bot.getShield(), true);
@@ -1314,6 +1271,46 @@ class EventProcessor {
                                 BotUtils.sendEmbedSpec(channel, embedCreateSpec);
                                 break;
                             }
+                            case "trait voucher": {
+                                if(internalSender.buffs.size() >= 3){
+                                    BotUtils.sendMessage(channel, "Cannot roll traits when more than 3 traits are active");
+                                    noRemove = true;
+                                }
+                                else{
+                                    Trait t = Tools.rollTrait(internalSender);
+                                    internalSender.applyTrait(t);
+
+                                    BotUtils.sendMessage(channel, "You have rolled trait: **" + t.name + "**!");
+                                }
+
+                                break;
+                            }
+                            case "trait remover":{
+                                if(lowerArgs.length < 4) {
+                                    BotUtils.sendMessage(channel, "Please specify the trait you wish to remove");
+                                }
+                                else {
+
+                                    String trait = "";
+                                    for (int i = 3; i < lowerArgs.length; i++) {
+                                        trait += lowerArgs[i] + " ";
+                                    }
+                                    trait = trait.trim();
+
+                                    for (Trait t : internalSender.buffs) {
+                                        if(t.name.toLowerCase().equals(trait)){
+                                            internalSender.removeTrait(t);
+                                            BotUtils.sendMessage(channel, "Removed trait: **" + t.name + "** from you!");
+                                            internalSender.removeItem(result);
+                                            return;
+                                        }
+                                    }
+
+                                    BotUtils.sendMessage(channel, "You do not have specified trait!");
+                                    noRemove = true;
+                                }
+                                break;
+                            }
                             default:
                                 BotUtils.sendMessage(channel, "Unable to use (try attack instead?)");
                                 return;
@@ -1326,7 +1323,7 @@ class EventProcessor {
                     }
 
 
-                    internalSender.removeItem(result);
+                    if(!noRemove) internalSender.removeItem(result);
                 }
                 break;
             }
@@ -1367,6 +1364,15 @@ class EventProcessor {
                 }
                 internalSender.lastDaily = 0;
                 BotUtils.sendMessage(channel, "Daily reward countdown has been reset!");
+                break;
+            }
+            case "resetweekly":{
+                if(!LongStream.of(BotUtils.ADMINS).anyMatch(x -> x == internalSender.id)){
+                    BotUtils.sendMessage(channel, "Error: Permission denied");
+                    break;
+                }
+                internalSender.lastWeekly = 0;
+                BotUtils.sendMessage(channel, "Weekly reward countdown has been reset!");
                 break;
             }
             case "additem":{
@@ -1579,9 +1585,9 @@ class EventProcessor {
                 User bot = Tools.getUser(Main.client.getSelfId().get().asLong());
                 Consumer<EmbedCreateSpec> embedCreateSpec = embed -> {
                     embed.setTitle(bot.username + "'s profile");
-                    embed.addField("Level:", "" + bot.getLevel(), true);
-                    embed.addField("Progress:", String.format("%.2f", (float) bot.getXp()) + "/" + bot.getXPRequired(), true);
-                    embed.addField("\u200b", String.format("%.2f", (float) (bot.getXp() / bot.getXPRequired()) * 100) + "%", true);
+                    embed.addField("Level:", "" + (bot.getLevel() - 100), true);
+                    embed.addField("Progress:", "0/0", true);
+                    embed.addField("\u200b", "0%", true);
                     embed.addField("Balance", ":moneybag: " + bot.getMoney(), true);
                     embed.addField("Health", ":heart: " + bot.getHealth(), true);
                     embed.addField("Shield", ":shield: " + bot.getShield(), true);
@@ -1606,11 +1612,61 @@ class EventProcessor {
                 break;
             }
             case "debug":{
-                internalSender.applyTrait(new PokeProofTrait(internalSender));
+                //internalSender.applyTrait(new PokeProofTrait(internalSender));
                 break;
             }
             case "debug2":{
-                internalSender.removeTrait(internalSender.buffs.get(0));
+                //internalSender.removeTrait(internalSender.buffs.get(0));
+                break;
+            }
+            case "givetrait":{
+                if(lowerArgs.length < 3){
+                    BotUtils.sendMessage(channel, "Usage: `givetrait @user traitID`");
+                    break;
+                }
+                else if(!LongStream.of(BotUtils.ADMINS).anyMatch(x -> x == internalSender.id)){
+                    BotUtils.sendMessage(channel,"Error: Permission Denied");
+                    break;
+                }
+
+                User target = BotUtils.getInternalUserFromMention(lowerArgs[1]);
+                if (target == null) {
+                    BotUtils.sendMessage(channel, "Target user not found!");
+                    break;
+                }
+
+                Trait t = Tools.traitTable(Integer.parseInt(lowerArgs[2]), target);
+                if(t == null) BotUtils.sendMessage(channel, "ID not found!");
+                else{
+                    target.applyTrait(t);
+                    BotUtils.sendMessage(channel, "Successfully gave " + t.name + " to " + target.mentionString());
+                }
+
+                break;
+            }
+            case "removetrait":{
+                if(lowerArgs.length < 3){
+                    BotUtils.sendMessage(channel, "Usage: `removetrait @user traitID`");
+                    break;
+                }
+                else if(!LongStream.of(BotUtils.ADMINS).anyMatch(x -> x == internalSender.id)){
+                    BotUtils.sendMessage(channel,"Error: Permission Denied");
+                    break;
+                }
+
+                User target = BotUtils.getInternalUserFromMention(lowerArgs[1]);
+                if (target == null) {
+                    BotUtils.sendMessage(channel, "Target user not found!");
+                    break;
+                }
+
+                Trait t = Tools.traitTable(Integer.parseInt(lowerArgs[2]), target);
+                if(t == null) BotUtils.sendMessage(channel, "ID not found!");
+                else{
+                    target.removeTrait(t);
+                    BotUtils.sendMessage(channel, "Successfully removed " + t.name + " from " + target.mentionString());
+                }
+
                 break;
             }
             case "help":{

@@ -74,9 +74,12 @@ class BotUtils {
             Market.getItem("Spicy air"),
             Market.getItem("Air"),
             Market.getItem("Air"),
-            new Item("Viola", "Deadly sound", 1, new int[]{100,145,150,200,Integer.MAX_VALUE},"weapon"),
-            new Item("Viola", "Deadly sound", 1, new int[]{100,145,150,200,Integer.MAX_VALUE},"weapon"),
-            new Item("Administrator's Console", "Unchecked Power", 14000, new int[]{Integer.MAX_VALUE},"weapon")
+            new Weapon("Viola", "Deadly sound",
+                    new int[]{100,145,150,200,Integer.MAX_VALUE}, null, null, 100, 1),
+            new Weapon("Viola", "Deadly sound",
+                    new int[]{100,145,150,200,Integer.MAX_VALUE}, null, null, 100, 1),
+            new Weapon("Administrator's Console", "Unchecked Power",
+                    new int[]{Integer.MAX_VALUE}, null, null, 100, 75000),
     };
 
     static long[] ADMINS = {506696814490288128L};
@@ -104,6 +107,7 @@ class BotUtils {
     }
 
     static Item getItem(String name){
+
         Item item = Market.getItem(name);
         if(item == null) item = LootBox.getItem(name);
 
@@ -133,7 +137,7 @@ class BotUtils {
         Tools.users.remove(bot);
         bot = Tools.getUser(bot.id);
         bot.maxHealth = botTiers[tier].health;
-        bot.level = tier;
+        bot.level = tier + 100;
         bot.setHealth(bot.maxHealth);
         bot.defense = botTiers[tier].def;
         bot.setShield(botTiers[tier].shield);

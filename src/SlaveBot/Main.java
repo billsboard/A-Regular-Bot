@@ -68,7 +68,7 @@ public class Main {
         //Leveling.createLeaderboard();
 
         Timer runTimer = new Timer();
-        runTimer.scheduleAtFixedRate(new SaveTask(), 0, 7 * 60 * 1000);
+        runTimer.scheduleAtFixedRate(new SaveTask(), 5*60*1000, 7 * 60 * 1000);
 
         TempRunner.run();
 

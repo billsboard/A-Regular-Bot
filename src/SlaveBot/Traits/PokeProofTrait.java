@@ -11,8 +11,9 @@ public class PokeProofTrait extends Trait {
     public PokeProofTrait(User u) {
         super(u);
 
-        type = Types.ATTACK_UNBREAKABLE;
+        type = Types.ATTACK;
         name = "Pokeproof";
+        uses = 40;
         desc = "+1.5x damage with stick\nImmunity to stick-based attacks";
     }
 

@@ -1,9 +1,6 @@
 package SlaveBot;
 
-import SlaveBot.Traits.CorneredFoxTrait;
-import SlaveBot.Traits.PokeProofTrait;
-import SlaveBot.Traits.Trait;
-import SlaveBot.Traits.YasuoTrait;
+import SlaveBot.Traits.*;
 import discord4j.core.object.entity.MessageChannel;
 import discord4j.core.object.util.Snowflake;
 import discord4j.core.spec.EmbedCreateSpec;
@@ -120,9 +117,7 @@ class Tools {
         return dmg;
     }
 
-    static Trait rollTrait(User u){
-        int r = BotUtils.random.nextInt(3);
-
+    static Trait traitTable(int r, User u){
         if(r == 0){
             return new CorneredFoxTrait(u);
         }
@@ -132,8 +127,23 @@ class Tools {
         else if(r == 2){
             return new PokeProofTrait(u);
         }
+        else if(r == 3){
+            return new WeakTrait(u);
+        }
+        else if(r == 4){
+            return new SharpshooterTrait(u);
+        }
+        else if(r == 5){
+            return new GasMaskTrait(u);
+        }
 
         return null;
+    }
+
+    static Trait rollTrait(User u){
+        int r = BotUtils.random.nextInt(6);
+
+        return traitTable(r, u);
     }
 
 }
