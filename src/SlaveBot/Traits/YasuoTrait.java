@@ -13,7 +13,7 @@ public class YasuoTrait extends Trait{
     public YasuoTrait(User u) {
         super(u);
 
-        type = Types.ATTACK_UNBREAKABLE;
+        type = Types.ATTACK;
         name = "Yasuo";
         desc = "+2.0x Critical Chance\n-20% Critical Damage";
         uses = 25;

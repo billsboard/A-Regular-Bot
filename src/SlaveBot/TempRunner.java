@@ -1,5 +1,7 @@
 package SlaveBot;
 
+import SlaveBot.Traits.Trait;
+
 import javax.script.ScriptEngineFactory;
 import javax.script.ScriptEngineManager;
 import java.util.ArrayList;
@@ -30,9 +32,22 @@ public class TempRunner {
             System.out.printf("\tLanguage: %s (%s)\n", langName, langVersion);
         }*/
 
-        for (User u : Tools.users) {
+        /*for (User u : Tools.users) {
+            u.baseStrength = u.level * 6 + 10;
+            u.baseDefense = u.level * 8 + 10;
+            u.baseCrit = u.level * 0.5 + 10;
+
             u.critDamageModifier = 1;
-        }
+            u.critModifier = 1;
+            u.strengthMultiplier = 1;
+            u.defenseMultiplier = 1;
+            u.accuracyModifier = 1;
+
+
+            for (Trait t : u.buffs) {
+                t.onEnable();
+            }
+        }*/
 
     }
 

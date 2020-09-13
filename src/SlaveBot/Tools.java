@@ -83,7 +83,9 @@ class Tools {
             e.setDescription(attack.mentionString() + " attacked " + defend.mentionString() + " with a(n) " + item.name);
             e.addField("Player Damage", String.format("%.2f", dmg.damage), true)
                     .addField("Shield Damage", String.format("%.2f", dmg.sDamage), true)
-                    .addField("True Damage", String.format("%.2f", dmg.tDamage), true);
+                    .addField("True Damage", String.format("%.2f", dmg.tDamage), true)
+                    .addField("Target Remaining Health", defend.getHealth() + "", true)
+                    .addField("Remaining Shield", defend.getShield() + "", true);
 
             e.addField("Attack log", noteData.toString(), false);
         };
@@ -139,12 +141,21 @@ class Tools {
         else if(r == 6){
             return new InterestingProtectionTrait(u);
         }
+        else if(r == 7){
+            return new SmallTrait(u);
+        }
+        else if(r == 8){
+            return new RecklessTrait(u);
+        }
+        else if(r == 9){
+            return new LedianTrait(u);
+        }
 
         return null;
     }
 
     static Trait rollTrait(User u){
-        int r = BotUtils.random.nextInt(7);
+        int r = BotUtils.random.nextInt(9);
 
         return traitTable(r, u);
     }

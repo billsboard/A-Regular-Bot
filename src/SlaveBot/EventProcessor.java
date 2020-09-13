@@ -202,7 +202,7 @@ class EventProcessor {
 
                 break;
             }
-            case "stats":{
+            case "stats": case "stat": case "s":{
                 if(lowerArgs.length < 2){
                     Consumer<EmbedCreateSpec> embedCreateSpec = embed -> {
                         embed.setTitle(sender.getUsername() + "'s stats");

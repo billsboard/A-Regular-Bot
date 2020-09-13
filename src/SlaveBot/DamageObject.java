@@ -12,7 +12,7 @@ class DamageObject {
     boolean miss, kill, shieldBreak, critical;
     double generalDamageModifier = 1;
 
-    double dmgMod = 1, tDmgMod = 1, sDmgMod = 1;
+    double dmgMod = 1, tDmgMod = 1, sDmgMod = 1, accMod = 1, critChanceMod = 1, critDmgMod = 1;
 
     StringBuilder messages = new StringBuilder();
 
@@ -29,10 +29,13 @@ class DamageObject {
     }
 
     void calculate(){
+
+        calculateTraits();
+
         int rSeed = BotUtils.random.nextInt(101);
 
 
-        double effectiveAccuracy = attack.accuracyModifier * item.accuracy;
+        double effectiveAccuracy = attack.accuracyModifier * item.accuracy * accMod;
         if(rSeed > effectiveAccuracy){ //Attack missed
             miss = true;
             kill = false;
@@ -47,12 +50,11 @@ class DamageObject {
         }
 
         rSeed = BotUtils.random.nextInt(101);
-        calculateTraits();
 
-        double effectiveCritChance = attack.baseCrit * attack.critModifier;
+        double effectiveCritChance = attack.baseCrit * attack.critModifier * critChanceMod;
         if(rSeed <= effectiveCritChance){
             critical = true;
-            generalDamageModifier *= 1.7;
+            generalDamageModifier *= 2.2 * attack.critDamageModifier * critDmgMod;
         }
 
         tDamage = generalDamageModifier * item.getTDamageValue() * strengthFormula(attack.baseStrength * attack.strengthMultiplier) * tDmgMod;
@@ -127,6 +129,10 @@ class DamageObject {
                     case "gas mask":{
                         generalDamageModifier *= 0;
                         messages.append(defend.mentionString() + "'s gas mask protected them!\n");
+                        break;
+                    }
+                    case "small":{
+                        accMod *= 0.67;
                         break;
                     }
                 }

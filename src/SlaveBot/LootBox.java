@@ -121,7 +121,10 @@ class LootBox {
             new Item("Nugget", "A chunk of gold", 40000, new int[]{}, "utility"),
             new Item("Nugget", "A chunk of gold", 40000, new int[]{}, "utility"),
             new Item("Nugget", "A chunk of gold", 40000, new int[]{}, "utility"),
-            new Item("Command Prompt", "Linux > Windows", 10000, new int[]{100000,500000,Integer.MAX_VALUE/2}, "weapon"),
+            new Weapon("Command Prompt", "Not Powershell",
+                    new int[]{100000,500000,Integer.MAX_VALUE/2}, null, null, 100, 50000),
+            new Weapon("Command Prompt", "Not Powershell",
+                    new int[]{100000,500000,Integer.MAX_VALUE/2}, null, null, 100, 50000),
             new Item("Trait Voucher", "Gives one free trait roll", 0, null, "utility", 0)
     };
 
@@ -140,10 +143,14 @@ class LootBox {
                     new int[]{Integer.MAX_VALUE}, null, null, 100, 75000),
             new Weapon("Administrator's Console", "Unchecked Power",
                     new int[]{Integer.MAX_VALUE}, null, null, 100, 75000),
-            new Item("Command Prompt", "Linux > Windows", 10000, new int[]{100000,500000,Integer.MAX_VALUE/2}, "weapon"),
-            new Item("Command Prompt", "Linux > Windows", 10000, new int[]{100000,500000,Integer.MAX_VALUE/2}, "weapon"),
-            new Item("Command Prompt", "Linux > Windows", 10000, new int[]{100000,500000,Integer.MAX_VALUE/2}, "weapon"),
-            new Item("Command Prompt", "Linux > Windows", 10000, new int[]{100000,500000,Integer.MAX_VALUE/2}, "weapon")
+            new Weapon("Command Prompt", "Not Powershell",
+                    new int[]{100000,500000,Integer.MAX_VALUE/2}, null, null, 100, 50000),
+            new Weapon("Command Prompt", "Not Powershell",
+                    new int[]{100000,500000,Integer.MAX_VALUE/2}, null, null, 100, 50000),
+            new Weapon("Command Prompt", "Not Powershell",
+                    new int[]{100000,500000,Integer.MAX_VALUE/2}, null, null, 100, 50000),
+            new Weapon("Command Prompt", "Not Powershell",
+                    new int[]{100000,500000,Integer.MAX_VALUE/2}, null, null, 100, 50000)
     };
 
     static Item getItem(String item){

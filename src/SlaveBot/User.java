@@ -51,7 +51,7 @@ public class User implements Serializable {
     public double accuracyModifier = 1;
     double captureModifier = 1;
     public double critModifier = 1;
-    double baseStrength = 10;
+    public double baseStrength = 10;
     public double baseDefense = 10;
     double baseEscape = 2;
     double baseAccuracy = 20;
@@ -447,7 +447,9 @@ public class User implements Serializable {
         while (this.xp > getXPRequired()){
             this.xp -= getXPRequired();
             level++;
-            defense = level*5;
+            baseDefense += 8;
+            baseStrength += 6;
+            baseCrit += 0.5;
             maxHealth = 100 + level*3;
             Leveling.addLeaderboard(this);
             BotUtils.sendMessage(channel, "Congratulations " + Main.getUserByID(id).getMention() + ", you have advanced to level " + level);

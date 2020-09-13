@@ -5,6 +5,8 @@ import SlaveBot.User;
 
 public class InterestingProtectionTrait extends Trait {
 
+    private static final long serialVersionUID = -3469561842740068123L;
+
     public InterestingProtectionTrait(User u) {
         super(u);
 

@@ -14,8 +14,6 @@ public class Market implements Serializable {
     public static void init(){
 
 
-
-
         Item[] weapons = {
                 new Weapon("Stick", "A generic stick from a normal tree",
                         new int[]{1,2,2,3,4,5,6,7,8,9,10,1,2,3,4,5,6,7,8,9,10,1,2,3,4,5,6,7,8,9,10,1000},
