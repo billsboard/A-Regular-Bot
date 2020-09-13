@@ -136,12 +136,15 @@ class Tools {
         else if(r == 5){
             return new GasMaskTrait(u);
         }
+        else if(r == 6){
+            return new InterestingProtectionTrait(u);
+        }
 
         return null;
     }
 
     static Trait rollTrait(User u){
-        int r = BotUtils.random.nextInt(6);
+        int r = BotUtils.random.nextInt(7);
 
         return traitTable(r, u);
     }

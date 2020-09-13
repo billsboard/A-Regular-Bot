@@ -58,6 +58,12 @@ public abstract class Trait implements Serializable {
 
         return false;
     }
+
+    public boolean isAfter(){
+        return type == Types.DEFEND_AFTER || type == Types.ATTACK_AFTER;
+    }
+
+
 }
 
 enum Types{
@@ -69,7 +75,9 @@ enum Types{
     ATTACK_UNBREAKABLE,
     DEFEND_UNBREAKABLE,
     CAPTURE,
-    ESCAPE
+    ESCAPE,
+    DEFEND_AFTER,
+    ATTACK_AFTER
 }
 
 

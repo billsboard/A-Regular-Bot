@@ -1,5 +1,7 @@
 package SlaveBot;
 
+import jnr.ffi.annotations.In;
+
 class LootBox {
     static Item[] LOOT = {
             Market.getItem("Stick"),
@@ -74,9 +76,13 @@ class LootBox {
             new Item("Old Bandage", "A simple old bandage", 200, new int[]{10,10,10,10,10,10,15,15,100},"heal"),
             new Item("Old Bandage", "A simple old bandage", 200, new int[]{10,10,10,10,10,10,15,15,100},"heal"),
             new Item("Full Heal", "Completely heals the user", 5000, new int[]{Integer.MAX_VALUE},"heal"),
-            new Item("Administrator's Console", "Unchecked Power", 14000, new int[]{Integer.MAX_VALUE},"weapon"),
+            new Weapon("Administrator's Console", "Unchecked Power",
+                    new int[]{Integer.MAX_VALUE}, null, null, 100, 75000),
+            new Weapon("Administrator's Console", "Unchecked Power",
+                    new int[]{Integer.MAX_VALUE}, null, null, 100, 75000),
             new Item("Full Heal", "Completely heals the user", 5000, new int[]{Integer.MAX_VALUE},"heal"),
-            new Item("Administrator's Console", "Unchecked Power", 14000, new int[]{Integer.MAX_VALUE},"weapon"),
+            new Weapon("Administrator's Console", "Unchecked Power",
+                    new int[]{Integer.MAX_VALUE}, null, null, 100, 75000),
             new Item("Viola", "Deadly sound", 1, new int[]{100,145,150,200,Integer.MAX_VALUE},"weapon"),
             new Item("Viola", "Deadly sound", 1, new int[]{100,145,150,200,Integer.MAX_VALUE},"weapon"),
             new Item("Viola", "Deadly sound", 1, new int[]{100,145,150,200,Integer.MAX_VALUE},"weapon"),
@@ -95,8 +101,10 @@ class LootBox {
             new Item("Full Heal", "Completely heals the user", 5000, new int[]{Integer.MAX_VALUE},"heal"),
             new Item("Administrator's Console", "Unchecked Power", 14000, new int[]{10000},"weapon"),
             new Item("Full Heal", "Completely heals the user", 5000, new int[]{Integer.MAX_VALUE},"heal"),
-            new Item("Administrator's Console", "Unchecked Power", 14000, new int[]{Integer.MAX_VALUE},"weapon"),
-            new Item("Administrator's Console", "Unchecked Power", 14000, new int[]{Integer.MAX_VALUE},"weapon"),
+            new Weapon("Administrator's Console", "Unchecked Power",
+                    new int[]{Integer.MAX_VALUE}, null, null, 100, 75000),
+            new Weapon("Administrator's Console", "Unchecked Power",
+                    new int[]{Integer.MAX_VALUE}, null, null, 100, 75000),
             new Item("King's Shield", "Used by Aegislash", 12000, new int[]{700,1000,1600}, "shield"),
             new Item("King's Shield", "Used by Aegislash", 12000, new int[]{700,1000,1600}, "shield"),
             new Item("King's Shield", "Used by Aegislash", 12000, new int[]{700,1000,1600}, "shield"),
@@ -126,9 +134,12 @@ class LootBox {
             new Item("Detect", "Marowak protected itself!", 32000, new int[]{1500,2500,5000}, "shield"),
             new Item("Nugget", "A chunk of gold", 40000, new int[]{}, "utility"),
             new Item("Nugget", "A chunk of gold", 40000, new int[]{}, "utility"),
-            new Item("Administrator's Console", "Unchecked Power", 14000, new int[]{Integer.MAX_VALUE},"weapon"),
-            new Item("Administrator's Console", "Unchecked Power", 14000, new int[]{Integer.MAX_VALUE},"weapon"),
-            new Item("Administrator's Console", "Unchecked Power", 14000, new int[]{Integer.MAX_VALUE},"weapon"),
+            new Weapon("Administrator's Console", "Unchecked Power",
+                    new int[]{Integer.MAX_VALUE}, null, null, 100, 75000),
+            new Weapon("Administrator's Console", "Unchecked Power",
+                    new int[]{Integer.MAX_VALUE}, null, null, 100, 75000),
+            new Weapon("Administrator's Console", "Unchecked Power",
+                    new int[]{Integer.MAX_VALUE}, null, null, 100, 75000),
             new Item("Command Prompt", "Linux > Windows", 10000, new int[]{100000,500000,Integer.MAX_VALUE/2}, "weapon"),
             new Item("Command Prompt", "Linux > Windows", 10000, new int[]{100000,500000,Integer.MAX_VALUE/2}, "weapon"),
             new Item("Command Prompt", "Linux > Windows", 10000, new int[]{100000,500000,Integer.MAX_VALUE/2}, "weapon"),

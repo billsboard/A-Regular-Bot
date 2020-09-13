@@ -12,6 +12,8 @@ class DamageObject {
     boolean miss, kill, shieldBreak, critical;
     double generalDamageModifier = 1;
 
+    double dmgMod = 1, tDmgMod = 1, sDmgMod = 1;
+
     StringBuilder messages = new StringBuilder();
 
 
@@ -53,16 +55,16 @@ class DamageObject {
             generalDamageModifier *= 1.7;
         }
 
-        tDamage = generalDamageModifier * item.getTDamageValue() * strengthFormula(attack.baseStrength * attack.strengthMultiplier);
+        tDamage = generalDamageModifier * item.getTDamageValue() * strengthFormula(attack.baseStrength * attack.strengthMultiplier) * tDmgMod;
         //System.out.println(item.getTDamageValue());
 
         double damageToShield = generalDamageModifier * item.getSDamageValue() * strengthFormula(attack.baseStrength * attack.strengthMultiplier) *
-                defenseFormula(defend.baseDefense * defend.defenseMultiplier);
+                defenseFormula(defend.baseDefense * defend.defenseMultiplier) * sDmgMod;
         double remainingShield = Math.max(0, defend.getShield() - damageToShield);
 
 
         double tempDamageVar = generalDamageModifier * item.getDamageValue() * strengthFormula(attack.baseStrength * attack.strengthMultiplier) *
-                defenseFormula(defend.baseDefense * defend.defenseMultiplier);
+                defenseFormula(defend.baseDefense * defend.defenseMultiplier) * dmgMod;
 
         damageToShield += Math.max(Math.max(0, tempDamageVar - remainingShield), tempDamageVar);
         tempDamageVar = Math.max(0, tempDamageVar - remainingShield);
@@ -76,7 +78,7 @@ class DamageObject {
 
         if(defend.health < damage + tDamage) kill = true;
 
-
+        calculateAfterTraits();
 
 
 
@@ -139,6 +141,50 @@ class DamageObject {
 
 
 
+    }
+
+    void calculateAfterTraits(){
+        Iterator<Trait> attackIt = attack.buffs.iterator();
+        while (attackIt.hasNext()){
+            Trait t = attackIt.next();
+            if(t.checkEnable(item, "ATTACK_AFTER")){
+                switch (t.name.toLowerCase()){
+                }
+
+                t.decrementDurability();
+                if(t.uses <= 0 && t.isBreakable()){
+                    attackIt.remove();
+                }
+            }
+
+        }
+
+        Iterator<Trait> defendIt = defend.buffs.iterator();
+        while (defendIt.hasNext()){
+            Trait t = defendIt.next();
+            if(t.checkEnable(item, "DEFEND_AFTER")){
+                switch (t.name.toLowerCase()){
+                    case "interesting protection":{
+                        if(!kill){
+                            damage = 0;
+                            tDamage = 0;
+                            sTrueDamage = 0;
+                            sBypassDamage = 0;
+                            sDamage = 0;
+                            shieldBreak = false;
+                            messages.append(defend.mentionString() + "'s Interesting Protection nullified the non-fatal attack!\n");
+                        }
+                        break;
+                    }
+                }
+
+                t.decrementDurability();
+                if(t.uses <= 0 && t.isBreakable()){
+                    defendIt.remove();
+                }
+            }
+
+        }
     }
 
     double strengthFormula(double x){
