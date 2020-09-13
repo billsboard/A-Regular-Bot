@@ -17,6 +17,7 @@ public class Item implements Serializable, Comparable {
 
     String type = "";
 
+
     int minLevel = 0;
 
     Item(String name, String description, int price){
@@ -24,6 +25,8 @@ public class Item implements Serializable, Comparable {
         this.description = description;
         this.price = price;
     }
+
+    Item(){}
 
 
     Item(String name, String description, int price, int[] damage, String type, int minLevel){

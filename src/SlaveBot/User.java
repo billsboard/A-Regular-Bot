@@ -1,5 +1,6 @@
 package SlaveBot;
 
+import SlaveBot.Traits.Trait;
 import discord4j.core.object.entity.MessageChannel;
 import discord4j.core.spec.EmbedCreateSpec;
 
@@ -33,7 +34,7 @@ public class User implements Serializable {
 
     double defense = 0;
 
-    private int shieldRemaining = 0;
+    int shieldRemaining = 0;
 
     int kills = 0, deaths = 0;
     boolean challengeActive = false;
@@ -43,6 +44,33 @@ public class User implements Serializable {
     HashMap<Item, Integer> inventory = new HashMap<>();
     ArrayList<String> slaveList = new ArrayList<>();
     ArrayList<Long> idList = new ArrayList<>();
+
+    double strengthMultiplier = 1;
+    public double defenseMultiplier = 1;
+    double escapeMultiplier = 1;
+    double accuracyModifier = 1;
+    double captureModifier = 1;
+    double critModifier = 1;
+    double baseStrength = 10;
+    public double baseDefense = 10;
+    double baseEscape = 2;
+    double baseAccuracy = 20;
+    double baseCapture = 10;
+    double baseCrit = 10;
+
+    ArrayList<Trait> buffs = new ArrayList<>();
+
+    void removeBuff(Trait t){
+        if(buffs.contains(t)){
+            strengthMultiplier /= t.attackMod;
+            defenseMultiplier /= t.defMod;
+            accuracyModifier /= t.accMod;
+            escapeModifier /= t.escMod;
+            captureModifier /= t.capMod;
+            critModifier /= t.critMod;
+        }
+    }
+
 
 
     User(long discordID){
@@ -208,6 +236,10 @@ public class User implements Serializable {
 
 
         return item;
+    }
+
+    String mentionString(){
+        return "<@" + id + ">";
     }
 
     void addItem(Item item){
@@ -427,6 +459,18 @@ public class User implements Serializable {
 
     int getLevel(){
         return level;
+    }
+
+    void applyTrait(Trait t){
+        buffs.add(t);
+        t.onEnable();
+    }
+
+    void removeTrait(Trait t){
+        if(buffs.contains(t)){
+            buffs.remove(t);
+            t.onDisable();
+        }
     }
 
 

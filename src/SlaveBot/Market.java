@@ -17,22 +17,71 @@ public class Market implements Serializable {
 
 
         Item[] weapons = {
-                new Item("Stick", "A generic stick from a normal tree", 50, new int[]{0,0,1,2,2,3,4,5,6,7,8,9,10,1,2,3,4,5,6,7,8,9,10,1,2,3,4,5,6,7,8,9,10,1000}, "weapon"),
-                new Item("Baseball Bat", "Weapon of choice for stereotypical gangs", 100, new int[]{0,5,5,5,6,6,6,8,9,9,14,14,16,19,22}, "weapon"),
-                new Item("Slipper", "Taken from an asian parent", 150, new int[]{0,0,0,1,1,1,1,2,2,2,3,5,9,13,15,35}, "weapon"),
-                new Item("Wooden Sword", "Two planks and a stick", 200, new int[]{0,20,20,20,20,20,20,20}, "weapon"),
-                new Item("Actual Sword", "Lightly used", 450, new int[]{0,0,0,15,15,15,16,16,20,20,23,23,34}, "weapon", 3),
-                new Item("French Rifle", "Never fired, dropped once", 500, new int[]{0,0,0,0,0,0,0,0,0,0,0,100}, "weapon",5),
-                new Item("German Rifle", "Better dead than red", 650, new int[]{0,0,10,10,25,25,25,25,25,50,50,75,100}, "weapon",7),
-                new Item("Perfume", "Strangely effective", 1000, new int[]{0,0,0,0,0,50,75,100,100}, "weapon",10),
-                new Item("Programmer's Blade", "`rm -rf /`", 5000, new int[]{100,100,114,125,125,136,139,149,150,159,175,193,199,200,250,12000,Integer.MAX_VALUE}, "weapon", 15),
-                new Item("Air", "saBOTage's favourite weapon", 7500, new int[]{1,100,123,253,200,190,320,195,200,384,420,320,295,600,15000,Integer.MAX_VALUE}, "weapon", 17),
-                new Item("False Swipe", "Leaves the target at 1hp", 2700, new int[]{85,100,76,120,165,95,86,88,89,95,64,99,89}, "weapon", 18),
-                new Item("Spicy Stick", "Basically a horn drill", 17500, new int[]{0,0,0,0,0,0,0,0,1000,100000,100000,Integer.MAX_VALUE,Integer.MAX_VALUE,Integer.MAX_VALUE}, "weapon", 18),
-                new Item("Spicy Air", "Seasoning, perhaps?", 12500, new int[]{100,200,250,340,472,475,501,10000,15000,12000,Integer.MAX_VALUE,730}, "weapon", 20),
-                new Item("Lyndon's Inventory", "Contains NSFW content", 8000, new int[]{325,402,431,425,425,452,340,472,475,501,503,321,352,Integer.MAX_VALUE,730}, "weapon", 21),
-                new Item("Missile", "Like the name suggests", 2000, new int[]{0}, "weapon", 22),
-                new Item("Thot Slayer", "Repels Marie Antoinette", 9001, new int[]{0,350,303,405,857,921,392,349,912,413,413,413,531,446,652,20000,Integer.MAX_VALUE}, "weapon", 24)
+                new Weapon("Stick", "A generic stick from a normal tree",
+                        new int[]{1,2,2,3,4,5,6,7,8,9,10,1,2,3,4,5,6,7,8,9,10,1,2,3,4,5,6,7,8,9,10,1000},
+                        null, null, 100, 45),
+
+                new Weapon("Baseball Bat", "A long, wooden stick",
+                        new int[]{5,5,5,6,6,6,8,9,9,14,14,16,19,22}, null, null,
+                        97, 100 ),
+
+                new Weapon("Slipper", "Taken from an asian parent",
+                        new int[]{1,1,1,1,2,2,2,3,5,9,13,15,35}, null, null,
+                        100, 150),
+
+                new Weapon("Wooden Sword", "Two planks and a stick",
+                        new int[]{20,22}, null, null,
+                        95, 200, 2),
+
+                new Weapon("Actual Sword", "Lightly used",
+                        new int[]{17,20,22,25,29,32,47,50}, null, null,
+                        92, 450, 2),
+
+                new Weapon("French Rifle", "Never fired, dropped once",
+                        new int[]{100}, null, null,
+                        25, 500, 2),
+
+                new Weapon("German Rifle", "Better dead than red",
+                        new int[]{25,25,50,50,50,75,75,100,200}, null, null,
+                        87, 500, 3),
+
+                new Weapon("Perfume", "Strangely effective",
+                        new int[]{10,20,22,30}, new int[]{10,15,17}, null,
+                        25, 1050, 4),
+
+                new Weapon("Programmer's Blade", "`rm -rf /`",
+                        new int[]{100,100,114,125,125,136,139,149,150,159,175,193,199,200,250,12000,Integer.MAX_VALUE}, null, null,
+                        100, 5000, 5),
+
+                new Weapon("Air", "saBOTage's favourite weapon",
+                        new int[]{1,100,123,253,200,190,320,195,200,384,420,320,295,600,15000,Integer.MAX_VALUE}, null, null,
+                        100, 7600, 12),
+
+                new Weapon("Spicy Air", "Seasoning, perhaps?",
+                        new int[]{1000,10000,10000,Integer.MAX_VALUE}, null, null,
+                        43, 12500, 15),
+
+                new Weapon("Spicy Stick", "Spicy Stick vs Sheer Cold",
+                        new int[]{Integer.MAX_VALUE}, null, null,
+                        30, 17500, 15),
+
+                new Weapon("Missile", "So much power, just like Kim-Jong Un",
+                        null, new int[]{20,21,20}, null,
+                        90, 10000, 18),
+
+                new Weapon("Lyndon's Inventory", "Contains NSFW content",
+                        new int[]{325,402,431,425,425,452,340,472,475,501,503,321,352,Integer.MAX_VALUE,730}, null, null,
+                        100, 8000, 20),
+
+                new Weapon("Thot Slayer", "Two diamonds, two sticks",
+                        new int[]{0,350,303,405,857,921,392,349,912,413,413,413,531,446,652,20000,Integer.MAX_VALUE}, null, null,
+                        100, 9020, 22),
+
+                new Weapon("Armor Piercing Bullet", "Good against shields",
+                        null, new int[]{25, 22,21,10,10}, null,
+                        90, 6600, 20),
+
+
         };
         categories.put("Weapons", weapons);
 
@@ -63,7 +112,6 @@ public class Market implements Serializable {
         categories.put("Shields", shield);
 
         Item[] utilities = {
-                new Item("Armor Piercing Bullet", "Good against shields",2150, new int[]{150,200,200,232,182,182,443,263,243,201,201,201,201,201,302,500,736,Integer.MAX_VALUE}, "utility", 10),
                 new Item("Vault", "Keeps $10000 from being stolen",12500, new int[]{0}, "utility"),
                 new Item("Crowbar", "Useful for penetrating vaults",1000, new int[]{0}, "utility"),
                 new Item("Dynamite", "Useful for penetrating vaults",3000, new int[]{0}, "utility",5),

@@ -17,7 +17,8 @@ import java.util.stream.LongStream;
 class BotUtils {
 
     // Constants for use throughout the bot
-    static String BOT_PREFIX = "$";
+    static String BOT_PREFIX = "]";
+    static String DISCORD_BOTLIST_PREFIX = "~";
     static long MILLIS_IN_MINUTE = 1000 * 60;
     static long MILLIS_IN_HOUR = 1000 * 60 * 60;
 

@@ -1,5 +1,7 @@
 package SlaveBot;
 
+import SlaveBot.Traits.CorneredFoxTrait;
+import SlaveBot.Traits.Trait;
 import com.sun.management.OperatingSystemMXBean;
 import discord4j.core.event.domain.message.MessageCreateEvent;
 import discord4j.core.object.Embed;
@@ -88,7 +90,8 @@ class EventProcessor {
             thread.processCommand(lowerArgs[0], lowerArgs, internalSender);
         }
 
-        if(!body.contains(BotUtils.BOT_PREFIX)) return;
+        if(!((guild.getId().asLong() == 264445053596991498L && body.startsWith(BotUtils.DISCORD_BOTLIST_PREFIX)
+                || guild.getId().asLong() != 264445053596991498L && body.startsWith(BotUtils.BOT_PREFIX)))){ return;}
 
         for (int i = 0; i < lowerArgs.length; i++) {
             lowerArgs[i] = lowerArgs[i].replaceAll("’", "'");
@@ -187,8 +190,26 @@ class EventProcessor {
                 if(lowerArgs.length < 2){
                     Consumer<EmbedCreateSpec> embedCreateSpec = embed -> {
                         embed.setTitle(sender.getUsername() + "'s stats");
-                        embed.addField("Health", ":heart: " + internalSender.getHealth() + "/" + internalSender.getMaxHealth(), true);
-                        embed.addField("Defense", ":shield: " + internalSender.defense, true);
+                        embed.addField("Health", ":heart: " + internalSender.getHealth() + "/" + internalSender.getMaxHealth(), false);
+                        embed.addField("Strength", ":crossed_swords: " + internalSender.baseStrength, true);
+                        embed.addField("Defense", ":shield: " + internalSender.baseDefense, true);
+                        embed.addField("Critical Hit Chance", ":dagger: " + internalSender.baseCrit + "%", true);
+
+                        StringBuilder x = new StringBuilder(), y = new StringBuilder();
+
+                        for (Trait t : internalSender.buffs) {
+                            x.append(t.name + "\n");
+                            y.append(t.desc + "\n");
+                        }
+
+                        if(x.toString().isEmpty()) {
+                            x.append("No active traits");
+                            y.append("\u200b");
+                        }
+
+                        embed.addField("Active Traits", x.toString(), true);
+                        embed.addField("\u200b", y.toString(), true);
+
                     };
                     BotUtils.sendEmbedSpec(channel,embedCreateSpec);
                 }
@@ -200,9 +221,13 @@ class EventProcessor {
                     }
 
                     Consumer<EmbedCreateSpec> embedCreateSpec = embed -> {
-                        embed.setTitle(sender.getUsername() + "'s stats");
-                        embed.addField("Health", ":heart: " + internalSender.getHealth() + "/" + internalSender.getMaxHealth(), true);
-                        embed.addField("Defense", ":shield: " + internalSender.defense, true);
+                        embed.setTitle(target.username + "'s stats");
+                        embed.addField("Health", ":heart: " + target.getHealth() + "/" + target.getMaxHealth(), false);
+                        embed.addField("Strength", ":crossed_swords: " + target.baseStrength, true);
+                        embed.addField("Defense", ":shield: " + target.baseDefense, true);
+                        embed.addField("Critical Hit Chance", ":dagger: " + target.baseCrit + "%", true);
+
+                        embed.addField("Active Traits", "None", false);
                     };
                     BotUtils.sendEmbedSpec(channel, embedCreateSpec);
                 }
@@ -570,6 +595,9 @@ class EventProcessor {
 
 
                 }
+                else if(lowerArgs[1].equalsIgnoreCase("help")){
+                    BotUtils.sendMessage(channel,"Current available commands are: `work` and `list`");
+                }
 
                 break;
             }
@@ -828,7 +856,7 @@ class EventProcessor {
                             }
                         }
                     }
-                    else if(!weapon.isWeapon()){
+                    else if(!(weapon instanceof Weapon)){
                         BotUtils.sendMessage(channel, weapon.getName() + " is not a weapon!");
                     }
                     else{
@@ -999,22 +1027,7 @@ class EventProcessor {
                                     internalSender.getQuantity(Market.getItem("ox")));
                             break;
                         }
-                        case "Armor Piercing Bullet":{
-                            int damage = weapon.getDamage();
-                            if(target.getShield() <= 0){
-                                BotUtils.sendMessage(channel, "Target had no shield to destroy");
-                            }
-                            else{
-                                target.setShield(target.getShield() - damage < 0 ? 0 : target.getShield() - damage);
-                                String output = sender.getMention() + " hit <@" + target.id + ">'s shield for `" + damage +"` damage\n";
-                                output += target.getShield() <= 0 ? "Their shield has been destroyed" : "They have `" + target.getShield() + "` shield left";
 
-                                BotUtils.sendMessage(channel, output);
-
-
-                            }
-                            break;
-                        }
                         default:
                             return;
                     }
@@ -1022,55 +1035,41 @@ class EventProcessor {
                     internalSender.removeItem(weapon);
                 }
                 else{
-                    if(!weapon.isWeapon()){
+                    if(!(weapon instanceof Weapon)){
                         BotUtils.sendMessage(channel, weapon.getName() + " is not a weapon!");
                         break;
                     }
 
-                    double dmg = weapon.getDamage();
-                    if(weapon.getName().equals("False Swipe")){ dmg = dmg * (1 - (target.defense / (target.defense + 150))) >= target.getHealth() ?
-                            (target.getHealth() - 1) / (1 - (target.defense / (target.defense + 150))) : dmg;
-                    }
+                    Tools.damageCalculation(channel,internalSender, target, (Weapon) weapon);
 
-                    if(dmg == 0){
-                        BotUtils.sendMessage(channel, "Your attack missed!");
-                        internalSender.gainXP(channel, BotUtils.random.nextDouble() * 100 + 25);
-                    }
-                    else{
-                        target.damage(dmg);
-                        dmg *= 1 - (target.defense / (target.defense + 150));
-                        dmg = Double.parseDouble(String.format("%.2f", (float) dmg));
-                        if(target.getHealth() <= 0){
-                            BotUtils.sendMessage(channel, (Main.getUserByID(internalSender.id).getMention() +" hit " + Main.getUserByID(target.id).getMention() + " for " + dmg + " damage!\nThey have been killed!"));
-                            int tempInt = ((long) 3)* ((long) target.money) > Integer.MAX_VALUE ? Integer.MAX_VALUE : 3 * target.getMoney();
-                            int moneyGained = BotUtils.random.nextInt(((tempInt) / 4)+1) + (target.money / 4);
-                            BotUtils.sendMessage(channel, (Main.getUserByID(internalSender.id).getMention() + " managed to loot $" + moneyGained + " from the dead body!"));
-                            target.setHealth(target.getMaxHealth());
-                            target.removeMoney(moneyGained);
-                            internalSender.addMoney(moneyGained);
-                            internalSender.kills++;
-                            target.deaths++;
-                            if(target.id == 519326187491950593L){
-                                BotUtils.sendMessage(channel, "The rest of the bot's money is encrypted and destroyed with a magnet");
-                                target.money = 0;
-                            }
-                            internalSender.gainXP(channel, BotUtils.random.nextDouble() * 1500 + 425);
-                        }
-                        else if(target.getShield() > 0){
-                            BotUtils.sendMessage(channel, (Main.getUserByID(internalSender.id).getMention() + " hit " + Main.getUserByID(target.id).getMention() + " for " + dmg + " damage!\nTheir shield took the blow!"));
-                            internalSender.gainXP(channel, BotUtils.random.nextDouble() * 500 + 25);
-                        }
-                        else{
-                            BotUtils.sendMessage(channel, (Main.getUserByID(internalSender.id).getMention() + " hit " + Main.getUserByID(target.id).getMention() + " for " + dmg + " damage!\nThey have `"
-                                    + String.format("%.2f", (float) target.getHealth()) + "`hp remaining"));
-                            internalSender.gainXP(channel, BotUtils.random.nextDouble() * 500 + 25);
-                        }
-                    }
+
 
                     internalSender.removeItem(weapon);
                 }
 
                 break;
+            }
+            case "testattack":{
+                Weapon testWeapon = new Weapon("TestWeapon", "A test weapon", new int[]{50, 100}, new int[]{5,10},
+                        new int[]{20, 50}, 100, 10);
+                User target = BotUtils.getInternalUserFromMention(lowerArgs[1]);
+                if(target == null){
+                    BotUtils.sendMessage(channel, "Target user not found!");
+                    break;
+                }
+
+                String item = "";
+                for (int i = 2; i < lowerArgs.length; i++) {
+                    item += lowerArgs[i] + " ";
+                }
+                item = item.trim();
+
+                Market.getItem(item);
+
+                Tools.damageCalculation(channel, internalSender, target, testWeapon);
+                break;
+
+
             }
             case "heal":{
                 if(lowerArgs.length < 2){
@@ -1594,7 +1593,11 @@ class EventProcessor {
                 break;
             }
             case "debug":{
-                BotUtils.sendMessage(channel, "" + guild);
+                internalSender.applyTrait(new CorneredFoxTrait(internalSender));
+                break;
+            }
+            case "debug2":{
+                internalSender.removeBuff(new CorneredFoxTrait(internalSender));
                 break;
             }
             case "help":{

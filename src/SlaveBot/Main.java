@@ -67,6 +67,9 @@ public class Main {
         //new DailyTask().run();
         //Leveling.createLeaderboard();
 
+        Timer runTimer = new Timer();
+        runTimer.scheduleAtFixedRate(new SaveTask(), 0, 7 * 60 * 1000);
+
         TempRunner.run();
 
         client.updatePresence(Presence.online(Activity.listening("commands | " + BotUtils.BOT_PREFIX + "help"))).block();
