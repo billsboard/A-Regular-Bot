@@ -6,7 +6,7 @@ public class Item implements Serializable, Comparable {
 
     public static final long serialVersionUID = 10L;
 
-    private String name;
+    public String name;
     private String description;
 
     int price;

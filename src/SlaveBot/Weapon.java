@@ -1,12 +1,13 @@
 package SlaveBot;
 
-class Weapon extends Item{
+public class Weapon extends Item{
+
+    private static final long serialVersionUID = -7987687458297070753L;
 
     int[] damage;
     int[] tDamage;
     int[] sDamage;
 
-    String name;
     String description;
 
     double accuracy = 100;

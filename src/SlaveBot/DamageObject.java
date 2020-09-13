@@ -1,10 +1,18 @@
 package SlaveBot;
 
+import SlaveBot.Traits.Trait;
+
+import java.util.ArrayList;
+
 class DamageObject {
 
     // Output Vars
     double damage, tDamage, sBypassDamage, sTrueDamage, sDamage;
     boolean miss, kill, shieldBreak, critical;
+    double generalDamageModifier = 1;
+
+    StringBuilder messages = new StringBuilder();
+
 
     User attack;
     User defend;
@@ -20,7 +28,6 @@ class DamageObject {
     void calculate(){
         int rSeed = BotUtils.random.nextInt(101);
 
-        double generalDamageModifier = 1;
 
         double effectiveAccuracy = attack.accuracyModifier * item.accuracy;
         if(rSeed > effectiveAccuracy){ //Attack missed
@@ -37,11 +44,12 @@ class DamageObject {
         }
 
         rSeed = BotUtils.random.nextInt(101);
+        calculateTraits();
 
         double effectiveCritChance = attack.baseCrit * attack.critModifier;
         if(rSeed <= effectiveCritChance){
             critical = true;
-            generalDamageModifier = 1.7;
+            generalDamageModifier *= 1.7;
         }
 
         tDamage = generalDamageModifier * item.getTDamageValue() * strengthFormula(attack.baseStrength * attack.strengthMultiplier);
@@ -55,7 +63,7 @@ class DamageObject {
         double tempDamageVar = generalDamageModifier * item.getDamageValue() * strengthFormula(attack.baseStrength * attack.strengthMultiplier) *
                 defenseFormula(defend.baseDefense * defend.defenseMultiplier);
 
-        damageToShield += Math.min(Math.max(0, tempDamageVar - remainingShield), tempDamageVar);
+        damageToShield += Math.max(Math.max(0, tempDamageVar - remainingShield), tempDamageVar);
         tempDamageVar = Math.max(0, tempDamageVar - remainingShield);
         if(damageToShield > defend.getShield() && defend.getShield() > 0){
             shieldBreak = true;
@@ -70,6 +78,44 @@ class DamageObject {
 
 
 
+
+
+
+    }
+
+    void calculateTraits(){
+
+        if(attack.buffs == null) attack.buffs = new ArrayList<>();
+        if(defend.buffs == null) defend.buffs = new ArrayList<>();
+
+
+        for (Trait t : attack.buffs) {
+            if(t.checkEnable(item, "ATTACK")){
+                switch (t.name.toLowerCase()){
+                    case "pokeproof":{
+                        generalDamageModifier *= 1.5;
+                        break;
+                    }
+                }
+
+                t.decrementDurability();
+            }
+        }
+
+
+        for (Trait t : defend.buffs) {
+            if(t.checkEnable(item, "DEFEND")){
+                switch (t.name.toLowerCase()){
+                    case "pokeproof":{
+                        generalDamageModifier *= 0;
+                        messages.append("Pokeproof blocked the attack!");
+                        break;
+                    }
+                }
+
+                t.decrementDurability();
+            }
+        }
 
 
 

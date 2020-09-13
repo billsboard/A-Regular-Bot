@@ -31,19 +31,7 @@ public class TempRunner {
         }*/
 
         for (User u : Tools.users) {
-            u.critModifier = 1;
-            u.accuracyModifier = 1;
-            u.captureModifier = 1;
-            u.escapeModifier = 1;
-            u.strengthMultiplier = 1;
-            u.defenseMultiplier = 1;
-
-            u.baseDefense = u.level * 2 + 10;
-            u.baseStrength = u.level * 2 + 10;
-            u.baseAccuracy = 20;
-            u.baseCapture = 10;
-            u.baseCrit = 10;
-            u.baseEscape = 2;
+            u.critDamageModifier = 1;
         }
 
     }

@@ -50,13 +50,14 @@ public class User implements Serializable {
     double escapeMultiplier = 1;
     double accuracyModifier = 1;
     double captureModifier = 1;
-    double critModifier = 1;
+    public double critModifier = 1;
     double baseStrength = 10;
     public double baseDefense = 10;
     double baseEscape = 2;
     double baseAccuracy = 20;
     double baseCapture = 10;
-    double baseCrit = 10;
+    public double baseCrit = 10;
+    public double critDamageModifier = 1;
 
     ArrayList<Trait> buffs = new ArrayList<>();
 
@@ -472,6 +473,8 @@ public class User implements Serializable {
             t.onDisable();
         }
     }
+
+
 
 
 

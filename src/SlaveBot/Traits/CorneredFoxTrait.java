@@ -5,6 +5,8 @@ import SlaveBot.User;
 
 public class CorneredFoxTrait extends Trait {
 
+    private static final long serialVersionUID = -7013546014116229914L;
+
     /* This trait grants +35 base defense and +1.15x defense modifier;
      * It is an unbreakable trait */
 
@@ -31,7 +33,7 @@ public class CorneredFoxTrait extends Trait {
     }
 
     @Override
-    boolean checkEnable(Item item, String attackType) {
+    public boolean checkEnable(Item item, String attackType) {
         return false;
     }
 

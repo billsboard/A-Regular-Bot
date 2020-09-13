@@ -1,6 +1,9 @@
 package SlaveBot;
 
+import SlaveBot.Traits.CorneredFoxTrait;
+import SlaveBot.Traits.PokeProofTrait;
 import SlaveBot.Traits.Trait;
+import SlaveBot.Traits.YasuoTrait;
 import discord4j.core.object.entity.MessageChannel;
 import discord4j.core.object.util.Snowflake;
 import discord4j.core.spec.EmbedCreateSpec;
@@ -72,6 +75,8 @@ class Tools {
         StringBuilder noteData = new StringBuilder();
         noteData.append("\u200b");
 
+        if(!dmg.messages.toString().isEmpty()) noteData.append(dmg.messages);
+
         if(dmg.critical) noteData.append("A critical hit!\n");
         if(dmg.shieldBreak) noteData.append(defend.mentionString() + "'s shield was destroyed!\n");
         if(dmg.miss) noteData.append("The attack missed!\n");
@@ -113,6 +118,22 @@ class Tools {
         attack.gainXP(c, 500 + BotUtils.random.nextInt(150));
 
         return dmg;
+    }
+
+    static Trait rollTrait(User u){
+        int r = BotUtils.random.nextInt(3);
+
+        if(r == 0){
+            return new CorneredFoxTrait(u);
+        }
+        else if(r == 1){
+            return new YasuoTrait(u);
+        }
+        else if(r == 2){
+            return new PokeProofTrait(u);
+        }
+
+        return null;
     }
 
 }

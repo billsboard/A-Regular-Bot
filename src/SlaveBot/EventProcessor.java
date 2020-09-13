@@ -1,6 +1,7 @@
 package SlaveBot;
 
 import SlaveBot.Traits.CorneredFoxTrait;
+import SlaveBot.Traits.PokeProofTrait;
 import SlaveBot.Traits.Trait;
 import com.sun.management.OperatingSystemMXBean;
 import discord4j.core.event.domain.message.MessageCreateEvent;
@@ -64,7 +65,7 @@ class EventProcessor {
                 onMessageReceived(messageCreateEvent.getMessage());
             }catch (Exception e){
                 System.out.println(e.getClass().getSimpleName());
-                e.printStackTrace(finalLogSteam);
+                e.printStackTrace();
             }
         });
     }
@@ -186,6 +187,24 @@ class EventProcessor {
                 BotUtils.sendMessage(channel, "No "+ sender.getMention() +", you must learn to spell!");
                 break;
             }
+            case "rolltrait":{
+                if(internalSender.money < 250000){
+                    BotUtils.sendMessage(channel, "Rolling traits requires $250000");
+                }
+                else if(internalSender.buffs.size() >= 3){
+                    BotUtils.sendMessage(channel, "Cannot roll traits when more than 3 traits are active");
+                }
+                else{
+                    Trait t = Tools.rollTrait(internalSender);
+                    internalSender.applyTrait(t);
+                    internalSender.removeMoney(250000);
+
+                    BotUtils.sendMessage(channel, "You have rolled trait: " + t.name + "!");
+
+                }
+
+                break;
+            }
             case "stats":{
                 if(lowerArgs.length < 2){
                     Consumer<EmbedCreateSpec> embedCreateSpec = embed -> {
@@ -195,20 +214,14 @@ class EventProcessor {
                         embed.addField("Defense", ":shield: " + internalSender.baseDefense, true);
                         embed.addField("Critical Hit Chance", ":dagger: " + internalSender.baseCrit + "%", true);
 
-                        StringBuilder x = new StringBuilder(), y = new StringBuilder();
+
+
+                        embed.addField("**Active Traits**", "Limit of 3 active traits", false);
 
                         for (Trait t : internalSender.buffs) {
-                            x.append(t.name + "\n");
-                            y.append(t.desc + "\n");
+                            embed.addField(t.name, t.desc, true);
                         }
 
-                        if(x.toString().isEmpty()) {
-                            x.append("No active traits");
-                            y.append("\u200b");
-                        }
-
-                        embed.addField("Active Traits", x.toString(), true);
-                        embed.addField("\u200b", y.toString(), true);
 
                     };
                     BotUtils.sendEmbedSpec(channel,embedCreateSpec);
@@ -1593,11 +1606,11 @@ class EventProcessor {
                 break;
             }
             case "debug":{
-                internalSender.applyTrait(new CorneredFoxTrait(internalSender));
+                internalSender.applyTrait(new PokeProofTrait(internalSender));
                 break;
             }
             case "debug2":{
-                internalSender.removeBuff(new CorneredFoxTrait(internalSender));
+                internalSender.removeTrait(internalSender.buffs.get(0));
                 break;
             }
             case "help":{

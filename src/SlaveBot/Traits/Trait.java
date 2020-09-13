@@ -27,9 +27,9 @@ public abstract class Trait implements Serializable {
 
     public abstract void onDisable();
 
-    abstract boolean checkEnable(Item item, String attackType);
+    public abstract boolean checkEnable(Item item, String attackType);
 
-    void decrementDurability(){
+    public void decrementDurability(){
         if(!isBreakable()) return;
         else{
             if(--uses <= 0){
@@ -66,7 +66,9 @@ enum Types{
     DEFENSE_SPECIALIZED,
     PERMANENT,
     ATTACK_UNBREAKABLE,
-    DEFEND_UNBREAKABLE
+    DEFEND_UNBREAKABLE,
+    CAPTURE,
+    ESCAPE
 }
 
 
