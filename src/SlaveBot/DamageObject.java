@@ -81,10 +81,40 @@ class DamageObject {
         if(defend.health < damage + tDamage) kill = true;
 
         calculateAfterTraits();
+        damageTraits();
 
 
 
 
+    }
+
+    void damageTraits(){
+
+
+        Iterator<Trait> attackIt = attack.buffs.iterator();
+        while (attackIt.hasNext()){
+            Trait t = attackIt.next();
+            if(t.checkEnable(item, "ATTACK") && !t.isDisabled()){
+                t.decrementDurability();
+                if(t.uses <= 0 && t.isBreakable()){
+                    attackIt.remove();
+                }
+
+            }
+
+        }
+
+        Iterator<Trait> defendIt = defend.buffs.iterator();
+        while (defendIt.hasNext()){
+            Trait t = defendIt.next();
+            if(t.checkEnable(item, "DEFEND") && !t.isDisabled()){
+                t.decrementDurability();
+                if(t.uses <= 0 && t.isBreakable()){
+                    defendIt.remove();
+                }
+            }
+
+        }
 
     }
 
@@ -97,7 +127,7 @@ class DamageObject {
         Iterator<Trait> attackIt = attack.buffs.iterator();
         while (attackIt.hasNext()){
             Trait t = attackIt.next();
-            if(t.checkEnable(item, "ATTACK")){
+            if(t.checkEnable(item, "ATTACK") && !t.isDisabled()){
                 switch (t.name.toLowerCase()){
                     case "pokeproof":{
                         generalDamageModifier *= 1.5;
@@ -106,10 +136,6 @@ class DamageObject {
                     }
                 }
 
-                t.decrementDurability();
-                if(t.uses <= 0 && t.isBreakable()){
-                    attackIt.remove();
-                }
             }
 
         }
@@ -119,7 +145,7 @@ class DamageObject {
         Iterator<Trait> defendIt = defend.buffs.iterator();
         while (defendIt.hasNext()){
             Trait t = defendIt.next();
-            if(t.checkEnable(item, "DEFEND")){
+            if(t.checkEnable(item, "DEFEND") && !t.isDisabled()){
                 switch (t.name.toLowerCase()){
                     case "pokeproof":{
                         generalDamageModifier *= 0;
@@ -136,11 +162,6 @@ class DamageObject {
                         break;
                     }
                 }
-
-                t.decrementDurability();
-                if(t.uses <= 0 && t.isBreakable()){
-                    defendIt.remove();
-                }
             }
 
         }
@@ -153,7 +174,7 @@ class DamageObject {
         Iterator<Trait> attackIt = attack.buffs.iterator();
         while (attackIt.hasNext()){
             Trait t = attackIt.next();
-            if(t.checkEnable(item, "ATTACK_AFTER")){
+            if(t.checkEnable(item, "ATTACK_AFTER") && !t.isDisabled()){
                 switch (t.name.toLowerCase()){
                 }
 
@@ -168,7 +189,7 @@ class DamageObject {
         Iterator<Trait> defendIt = defend.buffs.iterator();
         while (defendIt.hasNext()){
             Trait t = defendIt.next();
-            if(t.checkEnable(item, "DEFEND_AFTER")){
+            if(t.checkEnable(item, "DEFEND_AFTER") && !t.isDisabled()){
                 switch (t.name.toLowerCase()){
                     case "interesting protection":{
                         if(!kill){

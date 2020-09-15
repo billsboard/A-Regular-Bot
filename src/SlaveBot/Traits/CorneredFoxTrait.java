@@ -35,7 +35,8 @@ public class CorneredFoxTrait extends Trait {
 
     @Override
     public boolean checkEnable(Item item, String attackType) {
-        if(attackType.equals("DEFEND")){
+        if(isDisabled()) return false;
+        else if(attackType.equals("DEFEND")){
             return true;
         }
 

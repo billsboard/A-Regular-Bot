@@ -220,6 +220,9 @@ class EventProcessor {
                             if(t.isBreakable()){
                                 s += "\n" + t.uses + " durability remaining";
                             }
+                            if(t.isDisabled()){
+                                s += "\n**DISABLED**";
+                            }
 
                             embed.addField(t.name, s, true);
                         }
@@ -248,6 +251,9 @@ class EventProcessor {
                             String s = t.desc;
                             if(t.isBreakable()){
                                 s += "\n" + t.uses + " durability remaining";
+                            }
+                            if(t.isDisabled()){
+                                s += "\n**DISABLED**";
                             }
 
                             embed.addField(t.name, s, true);
@@ -1172,6 +1178,7 @@ class EventProcessor {
                     item = item.trim();
 
                     if(item.toLowerCase().startsWith("trait remover")) item = "trait remover";
+                    else if(item.startsWith("trait repair")) item = "trait repair";
 
                     Item result = BotUtils.getItem(item);
                     if (result == null) {
@@ -1311,6 +1318,39 @@ class EventProcessor {
                                 }
                                 break;
                             }
+                            case "trait repair":{
+                                if(lowerArgs.length < 4) {
+                                    BotUtils.sendMessage(channel, "Please specify the trait you wish to repair");
+                                }
+                                else {
+
+                                    String trait = "";
+                                    for (int i = 3; i < lowerArgs.length; i++) {
+                                        trait += lowerArgs[i] + " ";
+                                    }
+                                    trait = trait.trim();
+
+                                    for (Trait t : internalSender.buffs) {
+                                        if(t.name.toLowerCase().equals(trait)){
+                                            if(t.repairCount >= 3){
+                                                BotUtils.sendMessage(channel, "This trait cannot be repaired any further!");
+                                                return;
+                                            }
+
+                                            t.repairCount++;
+                                            t.uses += 5;
+                                            BotUtils.sendMessage(channel, "Repaired trait: **" + t.name + "**. You have " +
+                                                    (3 - t.repairCount) + " repairs left on this trait");
+                                            internalSender.removeItem(result);
+                                            return;
+                                        }
+                                    }
+
+                                    BotUtils.sendMessage(channel, "You do not have specified trait!");
+                                    noRemove = true;
+                                }
+                                break;
+                            }
                             default:
                                 BotUtils.sendMessage(channel, "Unable to use (try attack instead?)");
                                 return;
@@ -1324,6 +1364,56 @@ class EventProcessor {
 
 
                     if(!noRemove) internalSender.removeItem(result);
+                }
+                break;
+            }
+            case "disabletrait": case "traitdisable": case "tdisable":{
+                if(lowerArgs.length < 2){
+                    BotUtils.sendMessage(channel, "Usage: `disabletrait [trait]`");
+                }
+                else {
+                    String trait = "";
+                    for (int i = 1; i < lowerArgs.length; i++) {
+                        trait += lowerArgs[i] + " ";
+                    }
+                    trait = trait.trim();
+
+                    for (Trait t : internalSender.buffs) {
+                        if(t.name.toLowerCase().equals(trait) && !t.isDisableable()){
+                            BotUtils.sendMessage(channel, "Trait: **" + t.name + "** is not disableable!");
+                            return;
+                        }
+                        if(t.name.toLowerCase().equals(trait) && !t.isDisabled()){
+                            t.disable();
+                            BotUtils.sendMessage(channel, "Sucessfully disabled trait: **" + t.name + "**");
+                            return;
+                        }
+                    }
+
+                    BotUtils.sendMessage(channel, "Could not find specified enabled trait to disable");
+                }
+                break;
+            }
+            case "enabletrait": case "traitenable": case "tenable":{
+                if(lowerArgs.length < 2){
+                    BotUtils.sendMessage(channel, "Usage: `enabletrait [trait]`");
+                }
+                else {
+                    String trait = "";
+                    for (int i = 1; i < lowerArgs.length; i++) {
+                        trait += lowerArgs[i] + " ";
+                    }
+                    trait = trait.trim();
+
+                    for (Trait t : internalSender.buffs) {
+                        if(t.name.toLowerCase().equals(trait) && t.isDisabled()){
+                            t.enable();
+                            BotUtils.sendMessage(channel, "Sucessfully enabled trait: **" + t.name + "**");
+                            return;
+                        }
+                    }
+
+                    BotUtils.sendMessage(channel, "Could not find specified disabled trait to enable");
                 }
                 break;
             }

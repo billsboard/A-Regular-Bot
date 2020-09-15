@@ -59,7 +59,7 @@ public class User implements Serializable {
     public double baseCrit = 10;
     public double critDamageModifier = 1;
 
-    ArrayList<Trait> buffs = new ArrayList<>();
+    public ArrayList<Trait> buffs = new ArrayList<>();
 
     void removeBuff(Trait t){
         if(buffs.contains(t)){
@@ -475,10 +475,4 @@ public class User implements Serializable {
             t.onDisable();
         }
     }
-
-
-
-
-
-
 }

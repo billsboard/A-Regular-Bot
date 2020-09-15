@@ -32,7 +32,8 @@ public class SharpshooterTrait extends Trait {
 
     @Override
     public boolean checkEnable(Item item, String attackType) {
-        if(attackType.equals("ATTACK")){
+        if(isDisabled()) return false;
+        else if(attackType.equals("ATTACK")){
             return true;
         }
 

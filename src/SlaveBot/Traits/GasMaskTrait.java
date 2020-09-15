@@ -29,7 +29,8 @@ public class GasMaskTrait extends Trait {
 
     @Override
     public boolean checkEnable(Item item, String attackType) {
-        if(attackType.equals("DEFEND")){
+        if(isDisabled()) return false;
+        else if(attackType.equals("DEFEND")){
             if(item.name.toLowerCase().contains("air") || item.name.toLowerCase().equals("perfume")){
                 return true;
             }

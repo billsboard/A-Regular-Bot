@@ -13,6 +13,7 @@ public class WeakTrait extends Trait{
         type = Types.ATTACK_UNBREAKABLE;
         name = "Weak";
         desc = "-25% Strength\n-25% Defense\n-50% Critical Hit Chance\n-20% Critical Damage";
+        disableable = false;
     }
 
     @Override

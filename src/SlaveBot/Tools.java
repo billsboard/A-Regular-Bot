@@ -150,12 +150,18 @@ class Tools {
         else if(r == 9){
             return new LedianTrait(u);
         }
+        else if(r == 10){
+            return new NicoNicoNiiTrait(u);
+        }
+        else if(r == 11){
+            return new ToolboxTrait(u);
+        }
 
         return null;
     }
 
     static Trait rollTrait(User u){
-        int r = BotUtils.random.nextInt(9);
+        int r = BotUtils.random.nextInt(12);
 
         return traitTable(r, u);
     }

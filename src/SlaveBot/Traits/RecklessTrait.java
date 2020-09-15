@@ -11,7 +11,7 @@ public class RecklessTrait extends Trait{
         super(u);
 
         name = "Reckless";
-        desc = "+20 Base Strength\n+   % Strength\n-50% Defense\n+1.1x Crit Chance\n1.5x Crit Damage\n0.8x Accuracy";
+        desc = "+20 Base Strength\n1.2x Strength\n-50% Defense\n+1.1x Crit Chance\n1.5x Crit Damage\n0.8x Accuracy";
         type = Types.ATTACK;
         uses = 15;
     }
@@ -38,7 +38,8 @@ public class RecklessTrait extends Trait{
 
     @Override
     public boolean checkEnable(Item item, String attackType) {
-        if(attackType.equals("ATTACK")){
+        if(isDisabled()) return false;
+        else if(attackType.equals("ATTACK")){
             return true;
         }
 

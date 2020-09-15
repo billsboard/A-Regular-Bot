@@ -14,6 +14,11 @@ public abstract class Trait implements Serializable {
     public String name, desc;
     public int uses;
 
+    public int repairCount = 0;
+
+    boolean disabled = false;
+    boolean disableable = true;
+
     Types type;
 
 
@@ -38,6 +43,24 @@ public abstract class Trait implements Serializable {
             }
         }
     }
+
+    public void disable(){
+        if(isDisableable()) {
+            onDisable();
+            disabled = true;
+        }
+    }
+
+    public void enable(){
+        onEnable();
+        disabled = false;
+    }
+
+    public boolean isDisabled(){
+        return disabled;
+    }
+
+    public boolean isDisableable(){return disableable;}
 
     public boolean isBreakable(){
         return !(type == Types.DEFEND_UNBREAKABLE || type == Types.ATTACK_UNBREAKABLE || type == Types.PERMANENT);

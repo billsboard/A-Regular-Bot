@@ -30,7 +30,8 @@ public class PokeProofTrait extends Trait {
     @Override
     public boolean checkEnable(Item item, String attackType) {
 
-        if(attackType.equals("ATTACK")){
+        if(isDisabled()) return false;
+        else if(attackType.equals("ATTACK")){
             if(item.name.toLowerCase().contains("stick")){
                 return true;
             }

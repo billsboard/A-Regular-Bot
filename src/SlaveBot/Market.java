@@ -45,7 +45,7 @@ public class Market implements Serializable {
 
                 new Weapon("Perfume", "Strangely effective",
                         new int[]{10,20,22,30}, new int[]{10,15,17}, null,
-                        25, 1050, 4),
+                        80, 1050, 4),
 
                 new Weapon("Programmer's Blade", "`rm -rf /`",
                         new int[]{100,100,114,125,125,136,139,149,150,159,175,193,199,200,250,12000,Integer.MAX_VALUE}, null, null,
@@ -76,7 +76,7 @@ public class Market implements Serializable {
                         100, 9020, 22),
 
                 new Weapon("Armor Piercing Bullet", "Good against shields",
-                        null, new int[]{25, 22,21,10,10}, null,
+                        null, new int[]{25, 22,21,10,10,50,40                                                     }, null,
                         90, 6600, 20),
 
 
@@ -123,6 +123,13 @@ public class Market implements Serializable {
                 new Item("Trait Remover", "Removes one trait", 40000, new int[]{0}, "utility")
         };
         categories.put("Utilities", utilities);
+
+        Item[] traitstuff = {
+                new Item("Trait Remover", "Removes one trait", 40000, new int[]{0}, "utility"),
+                new Item("Trait Repair", "Repairs one trait", 20000, new int[]{0}, "utility"),
+                new Item("Trait Voucher", "Gives one free trait roll", 45000, null, "utility", 0)
+        };
+        categories.put("Traits", traitstuff);
 
 
 

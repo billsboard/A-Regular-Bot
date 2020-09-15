@@ -13,6 +13,7 @@ public class LedianTrait extends Trait {
         name = "\"Lesbian Noire\"";
         desc = "-50% Strength\n-50% Defense\n0.5x Critical Hit Chance\n0.75x Critical Hit Damage\n0.9x Accuracy";
         type = Types.DEFEND_UNBREAKABLE;
+        disableable = false;
     }
 
     @Override

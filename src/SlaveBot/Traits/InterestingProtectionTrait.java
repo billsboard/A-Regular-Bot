@@ -28,7 +28,8 @@ public class InterestingProtectionTrait extends Trait {
 
     @Override
     public boolean checkEnable(Item item, String attackType) {
-        if(attackType.equals("DEFEND_AFTER")) return true;
+        if(isDisabled()) return false;
+        else if(attackType.equals("DEFEND_AFTER")) return true;
 
         return false;
     }
