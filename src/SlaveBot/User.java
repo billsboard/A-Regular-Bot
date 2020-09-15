@@ -287,7 +287,7 @@ public class User implements Serializable {
         return money;
     }
 
-    void addMoney(int amount){
+    public void addMoney(int amount){
         if((long) money + (long) amount > Integer.MAX_VALUE){money = Integer.MAX_VALUE;}
         else if(amount <= 0){return;}
         else{

@@ -86,6 +86,22 @@ public abstract class Trait implements Serializable {
         return type == Types.DEFEND_AFTER || type == Types.ATTACK_AFTER;
     }
 
+    public void procedure1(){}
+
+    public void procedure2(){}
+
+    public void procedure3(){}
+
+    public void procedure4(){}
+
+    public void procedure5(){}
+
+    public void procedureArgs1(Object o){}
+
+    public void procedureArgs2(Object o){}
+
+
+
 
 }
 
@@ -100,7 +116,8 @@ enum Types{
     CAPTURE,
     ESCAPE,
     DEFEND_AFTER,
-    ATTACK_AFTER
+    ATTACK_AFTER,
+    ATTACK_DEFENSE;
 }
 
 

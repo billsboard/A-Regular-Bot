@@ -14,6 +14,7 @@ public class SmallTrait extends Trait {
         desc = "-10% Strength\n-25% Defense\n-33% Enemy Accuracy";
         uses = 15;
         type = Types.DEFENSE;
+        disableable = false;
     }
 
     @Override

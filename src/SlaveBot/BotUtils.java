@@ -139,7 +139,7 @@ class BotUtils {
         bot.maxHealth = botTiers[tier].health;
         bot.level = tier + 100;
         bot.setHealth(bot.maxHealth);
-        bot.defense = botTiers[tier].def;
+        bot.baseDefense = botTiers[tier].def;
         bot.setShield(botTiers[tier].shield);
         bot.addMoney(random.nextInt(botTiers[tier].moneyMax - botTiers[tier].moneyMin) + botTiers[tier].moneyMin);
     }

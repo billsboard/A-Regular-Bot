@@ -209,8 +209,9 @@ class EventProcessor {
                         embed.addField("Health", ":heart: " + internalSender.getHealth() + "/" + internalSender.getMaxHealth(), false);
                         embed.addField("Strength", ":crossed_swords: " + String.format("%.2f", internalSender.baseStrength * internalSender.strengthMultiplier), true);
                         embed.addField("Defense", ":shield: " + String.format("%.2f", internalSender.baseDefense * internalSender.defenseMultiplier), true);
+                        embed.addField("Accuracy", ":dart: " + String.format("%.2f", internalSender.accuracyModifier) + "x", true);
                         embed.addField("Critical Hit Chance", ":dagger: " + String.format("%.2f", internalSender.baseCrit * internalSender.critModifier) + "%", true);
-
+                        embed.addField("Critical Damage", ":turkey: " + String.format("%.2f", internalSender.critDamageModifier) + "x", true);
 
 
                         embed.addField("**Active Traits**", "Limit of 3 active traits", false);
@@ -242,8 +243,11 @@ class EventProcessor {
                         embed.setTitle(target.username + "'s stats");
                         embed.addField("Health", ":heart: " + target.getHealth() + "/" + target.getMaxHealth(), false);
                         embed.addField("Strength", ":crossed_swords: " + String.format("%.2f", target.baseStrength * target.strengthMultiplier), true);
+                        embed.addField("Accuracy", ":dart: " + String.format("%.2f", target.accuracyModifier) + "x", true);
                         embed.addField("Defense", ":shield: " + String.format("%.2f", target.baseDefense * target.defenseMultiplier), true);
                         embed.addField("Critical Hit Chance", ":dagger: " + String.format("%.2f", target.baseCrit * target.critModifier) + "%", true);
+                        embed.addField("Critical Damage", ":turkey: " + String.format("%.2f", target.critDamageModifier) + "x", true);
+
 
                         embed.addField("**Active Traits**", "Limit of 3 active traits", false);
 
@@ -858,6 +862,10 @@ class EventProcessor {
                     BotUtils.sendRatelimitMessage(channel, BotUtils.attackTime - (new Date().getTime() - internalSender.lastAttack));
                     break;
                 }
+                if(internalSender.id == target.id){
+                    BotUtils.sendMessage(channel, "Suicide is illegal! It must be punished with the death penalty!");
+                    break;
+                }
 
                 if(target.id == Main.client.getSelfId().get().asLong() && BotUtils.botFightActive){
                     if(channel.getId().asLong() != BotUtils.fightChannelID){
@@ -877,9 +885,9 @@ class EventProcessor {
                     }
                     else{
                         User bot = Tools.getUser(Main.client.getSelfId().get().asLong());
-                        Tools.damageCalculation(channel, internalSender, bot, (Weapon) weapon);
+                        DamageObject dmg = Tools.damageCalculation(channel, internalSender, bot, (Weapon) weapon);
 
-                        if(target.getHealth() <= 0){
+                        if(dmg.kill){
 
                             bot.money = 0;
                             //internalSender.gainXP(channel, BotUtils.random.nextDouble() * 1500 + 825);
@@ -892,21 +900,23 @@ class EventProcessor {
                             else{
                                 BotUtils.sendMessage(channel, "Tier " + (BotUtils.botTier - 1) + " defeated! Next tier commencing...");
                                 BotUtils.setBotTier(BotUtils.botTier);
+                                bot = Tools.getUser(Main.client.getSelfId().get().asLong());
+                                User finalBot = bot;
                                 Consumer<EmbedCreateSpec> embedCreateSpec = embed -> {
-                                    embed.setTitle(bot.username + "'s profile");
-                                    embed.addField("Level:", "" + (bot.getLevel() - 100), true);
+                                    embed.setTitle(finalBot.username + "'s profile");
+                                    embed.addField("Level:", "" + (finalBot.getLevel() - 100), true);
                                     embed.addField("Progress:", 0 + "/" + 0, true);
                                     embed.addField("\u200b", "0%", true);
-                                    embed.addField("Balance", ":moneybag: " + bot.getMoney(), true);
-                                    embed.addField("Health", ":heart: " + bot.getHealth(), true);
-                                    embed.addField("Shield", ":shield: " + bot.getShield(), true);
-                                    embed.addField("Kills:", "" + bot.kills, true);
-                                    embed.addField("Deaths:", "" + bot.deaths, true);
-                                    embed.addField("K/D Ratio:", String.format("%.2f", bot.deaths > 0 ? ((float)bot.kills)/((float)bot.deaths) : 0.00f), true);
-                                    embed.addField("Reputation", ":scales: " + String.format("%.2f", (float) bot.getReputation()), false);
-                                    embed.addField("Slaves:", "**Alive**: " + bot.slaveList.size(), true);
-                                    embed.addField("\u200b", "**Escaped**: " + bot.escapedSlaves, true);
-                                    embed.addField("\u200b", "**Dead**: " + bot.deadSlaves, true);
+                                    embed.addField("Balance", ":moneybag: " + finalBot.getMoney(), true);
+                                    embed.addField("Health", ":heart: " + finalBot.getHealth(), true);
+                                    embed.addField("Shield", ":shield: " + finalBot.getShield(), true);
+                                    embed.addField("Kills:", "" + finalBot.kills, true);
+                                    embed.addField("Deaths:", "" + finalBot.deaths, true);
+                                    embed.addField("K/D Ratio:", String.format("%.2f", finalBot.deaths > 0 ? ((float) finalBot.kills)/((float) finalBot.deaths) : 0.00f), true);
+                                    embed.addField("Reputation", ":scales: " + String.format("%.2f", (float) finalBot.getReputation()), false);
+                                    embed.addField("Slaves:", "**Alive**: " + finalBot.slaveList.size(), true);
+                                    embed.addField("\u200b", "**Escaped**: " + finalBot.escapedSlaves, true);
+                                    embed.addField("\u200b", "**Dead**: " + finalBot.deadSlaves, true);
                                 };
                                 BotUtils.sendEmbedSpec(channel,embedCreateSpec);
                             }
@@ -915,6 +925,7 @@ class EventProcessor {
                             Weapon w = (Weapon) BotUtils.botUsableWeapons[BotUtils.random.nextInt(BotUtils.botUsableWeapons.length)];
                             Tools.damageCalculation(channel, bot, internalSender, w);
                         }
+
                         internalSender.removeItem(weapon);
                     }
                     break;
@@ -1338,7 +1349,7 @@ class EventProcessor {
                                             }
 
                                             t.repairCount++;
-                                            t.uses += 5;
+                                            t.uses += 10;
                                             BotUtils.sendMessage(channel, "Repaired trait: **" + t.name + "**. You have " +
                                                     (3 - t.repairCount) + " repairs left on this trait");
                                             internalSender.removeItem(result);

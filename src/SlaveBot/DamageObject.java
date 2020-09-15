@@ -1,6 +1,7 @@
 package SlaveBot;
 
 import SlaveBot.Traits.Trait;
+import SlaveBot.Traits.WantedTrait;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -89,15 +90,15 @@ class DamageObject {
     }
 
     void damageTraits(){
-
-
         Iterator<Trait> attackIt = attack.buffs.iterator();
         while (attackIt.hasNext()){
             Trait t = attackIt.next();
             if(t.checkEnable(item, "ATTACK") && !t.isDisabled()){
                 t.decrementDurability();
                 if(t.uses <= 0 && t.isBreakable()){
-                    attackIt.remove();
+                    try {
+                        attackIt.remove();
+                    }catch (Exception ignored){}
                 }
 
             }
@@ -110,7 +111,9 @@ class DamageObject {
             if(t.checkEnable(item, "DEFEND") && !t.isDisabled()){
                 t.decrementDurability();
                 if(t.uses <= 0 && t.isBreakable()){
-                    defendIt.remove();
+                    try {
+                        defendIt.remove();
+                    }catch (Exception ignored){}
                 }
             }
 
@@ -161,6 +164,10 @@ class DamageObject {
                         accMod *= 0.67;
                         break;
                     }
+                    case "agile":{
+                        accMod *= 0.85;
+                        break;
+                    }
                 }
             }
 
@@ -176,11 +183,19 @@ class DamageObject {
             Trait t = attackIt.next();
             if(t.checkEnable(item, "ATTACK_AFTER") && !t.isDisabled()){
                 switch (t.name.toLowerCase()){
+                    case "wanted":{
+                        if(kill){
+                            t.procedure1();
+                        }
+                    }
+                    break;
                 }
 
                 t.decrementDurability();
                 if(t.uses <= 0 && t.isBreakable()){
-                    attackIt.remove();
+                    try {
+                        attackIt.remove();
+                    }catch (Exception ignored){}
                 }
             }
 
@@ -203,11 +218,19 @@ class DamageObject {
                         }
                         break;
                     }
+                    case "wanted":{
+                        if(kill){
+                            t.procedureArgs1(attack);
+                        }
+                        break;
+                    }
                 }
 
                 t.decrementDurability();
                 if(t.uses <= 0 && t.isBreakable()){
-                    defendIt.remove();
+                    try {
+                        defendIt.remove();
+                    }catch (Exception ignored){}
                 }
             }
 
@@ -215,7 +238,7 @@ class DamageObject {
     }
 
     double strengthFormula(double x){
-        return 0.2 * Math.log(x/2 + 1) + 1;
+        return 0.25 * Math.sqrt(x);
     }
 
     double defenseFormula(double x){
