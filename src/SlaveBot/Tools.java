@@ -159,12 +159,15 @@ class Tools {
         else if(r == 12){
             return new WantedTrait(u);
         }
+        else if(r == 13){
+            return new AgileTrait(u);
+        }
 
         return null;
     }
 
     static Trait rollTrait(User u){
-        int r = BotUtils.random.nextInt(13);
+        int r = BotUtils.random.nextInt(14);
 
         return traitTable(r, u);
     }

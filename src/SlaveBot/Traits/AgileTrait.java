@@ -4,7 +4,9 @@ import SlaveBot.Item;
 import SlaveBot.User;
 
 public class AgileTrait extends Trait {
-    AgileTrait(User u) {
+    private static final long serialVersionUID = 6651733723378500897L;
+
+    public AgileTrait(User u) {
         super(u);
 
         name = "Agile";
