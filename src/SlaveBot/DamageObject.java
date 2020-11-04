@@ -1,6 +1,7 @@
 package SlaveBot;
 
 import SlaveBot.Traits.Trait;
+import SlaveBot.Traits.VigilanteTrait;
 import SlaveBot.Traits.WantedTrait;
 
 import java.util.ArrayList;
@@ -97,6 +98,7 @@ class DamageObject {
                 t.decrementDurability();
                 if(t.uses <= 0 && t.isBreakable()){
                     try {
+                        messages.append(attack.mentionString()).append("'s trait: **").append(t).append("** has broken!\n");
                         attackIt.remove();
                     }catch (Exception ignored){}
                 }
@@ -112,6 +114,7 @@ class DamageObject {
                 t.decrementDurability();
                 if(t.uses <= 0 && t.isBreakable()){
                     try {
+                        messages.append(defend.mentionString()).append("'s trait: **").append(t).append("** has broken!\n");
                         defendIt.remove();
                     }catch (Exception ignored){}
                 }
@@ -194,6 +197,7 @@ class DamageObject {
                 t.decrementDurability();
                 if(t.uses <= 0 && t.isBreakable()){
                     try {
+                        messages.append(attack.mentionString()).append("'s trait: **").append(t).append("** has broken!\n");
                         attackIt.remove();
                     }catch (Exception ignored){}
                 }
@@ -220,7 +224,12 @@ class DamageObject {
                     }
                     case "wanted":{
                         if(kill){
+                            messages.append(attack.mentionString() + " has claimed the bounty and become a celebrated hero!\n");
+                            attack.applyTrait(new VigilanteTrait(attack));
                             t.procedureArgs1(attack);
+                            t.onDisable();
+                            defendIt.remove();
+                            continue;
                         }
                         break;
                     }
@@ -229,6 +238,7 @@ class DamageObject {
                 t.decrementDurability();
                 if(t.uses <= 0 && t.isBreakable()){
                     try {
+                        messages.append(defend.mentionString()).append("'s trait: **").append(t).append("** has broken!\n");
                         defendIt.remove();
                     }catch (Exception ignored){}
                 }

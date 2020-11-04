@@ -43,40 +43,55 @@ public class Market implements Serializable {
                         new int[]{25,25,50,50,50,75,75,100,200}, null, null,
                         87, 500, 3),
 
+                new Weapon("Scopeless Gun", "Barrelless, scopeless and bulletless",
+                        new int[]{1}, null, null,
+                        0, 1, 5),
+
                 new Weapon("Perfume", "Strangely effective",
                         new int[]{10,20,22,30}, new int[]{10,15,17}, null,
                         80, 1050, 4),
 
                 new Weapon("Programmer's Blade", "`rm -rf /`",
-                        new int[]{100,100,114,125,125,136,139,149,150,159,175,193,199,200,250,12000,Integer.MAX_VALUE}, null, null,
+                        new int[]{100,100,114,125,125,136,139,149,150,159,175,193,199,200,250,12000,1000000000}, null, null,
                         100, 5000, 5),
 
+                new Weapon("Crow", "Aaron will chase!",
+                        new int[]{2,60,75,100,200,113,119,129,192,10000000}, new int[]{1}, new int[]{1},
+                        92, 6000, 10),
+
                 new Weapon("Air", "saBOTage's favourite weapon",
-                        new int[]{1,100,123,253,200,190,320,195,200,384,420,320,295,600,15000,Integer.MAX_VALUE}, null, null,
+                        new int[]{1,100,123,253,200,190,320,195,200,384,420,320,295,600,15000,1000000000}, null, null,
                         100, 7600, 12),
 
                 new Weapon("Spicy Air", "Seasoning, perhaps?",
-                        new int[]{1000,10000,10000,Integer.MAX_VALUE}, null, null,
+                        new int[]{1000,10000,10000,1000000000}, null, null,
                         43, 12500, 15),
 
                 new Weapon("Spicy Stick", "Spicy Stick vs Sheer Cold",
-                        new int[]{Integer.MAX_VALUE}, null, null,
+                        new int[]{1000000000}, null, null,
                         30, 17500, 15),
+
+                new Weapon("Trebuchet", "The superior siege engine.",
+                        new int[]{10,15,25,50}, null, new int[]{200,300,500,1000,5000,1000000000}, 80, 5000, 17),
 
                 new Weapon("Missile", "So much power, just like Kim-Jong Un",
                         null, new int[]{20,21,20}, null,
                         90, 10000, 18),
 
                 new Weapon("Lyndon's Inventory", "Contains NSFW content",
-                        new int[]{325,402,431,425,425,452,340,472,475,501,503,321,352,Integer.MAX_VALUE,730}, null, null,
+                        new int[]{325,402,431,425,425,452,340,472,475,501,503,321,352,1000000000,730}, null, null,
                         100, 8000, 20),
 
                 new Weapon("Thot Slayer", "Two diamonds, two sticks",
-                        new int[]{0,350,303,405,857,921,392,349,912,413,413,413,531,446,652,20000,Integer.MAX_VALUE}, null, null,
+                        new int[]{1,350,303,405,857,921,392,349,912,413,413,413,531,446,652,20000,1000000000}, null, null,
                         100, 9020, 22),
 
+                new Weapon("Branch", "Unstickified stick",
+                        new int[]{50,60,100,400,405,873,391,742,693,482,428,753,1000000000,1000000000}, null, null,
+                        100, 12000, 25),
+
                 new Weapon("Armor Piercing Bullet", "Good against shields",
-                        null, new int[]{25, 22,21,10,10,50,40                                                     }, null,
+                        null, new int[]{25, 22,21,10,10,50,40}, null,
                         90, 6600, 20),
 
 

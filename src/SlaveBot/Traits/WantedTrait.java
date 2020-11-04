@@ -41,9 +41,6 @@ public class WantedTrait extends Trait {
         if(o instanceof User){
             User u = (User) o;
             u.addMoney(kills * 2000);
-            try {
-                attachedUser.removeTrait(this);
-            }catch (Exception ignored){}
         }
     }
 

@@ -63,6 +63,7 @@ class EventProcessor {
             }catch (Exception e){
                 System.out.println(e.getClass().getSimpleName());
                 e.printStackTrace(finalLogSteam);
+                //e.printStackTrace();
             }
         });
     }
@@ -1395,6 +1396,10 @@ class EventProcessor {
                             return;
                         }
                         if(t.name.toLowerCase().equals(trait) && !t.isDisabled()){
+                            if(!internalSender.canTraitToggle()){
+                                BotUtils.sendRatelimitMessage(channel, BotUtils.traitToggleTime - (new Date().getTime() - internalSender.lastTraitToggle));
+                                return;
+                            }
                             t.disable();
                             BotUtils.sendMessage(channel, "Sucessfully disabled trait: **" + t.name + "**");
                             return;
@@ -1418,6 +1423,10 @@ class EventProcessor {
 
                     for (Trait t : internalSender.buffs) {
                         if(t.name.toLowerCase().equals(trait) && t.isDisabled()){
+                            if(!internalSender.canTraitToggle()){
+                                BotUtils.sendRatelimitMessage(channel, BotUtils.traitToggleTime - (new Date().getTime() - internalSender.lastTraitToggle));
+                                return;
+                            }
                             t.enable();
                             BotUtils.sendMessage(channel, "Sucessfully enabled trait: **" + t.name + "**");
                             return;
@@ -1474,6 +1483,23 @@ class EventProcessor {
                 }
                 internalSender.lastWeekly = 0;
                 BotUtils.sendMessage(channel, "Weekly reward countdown has been reset!");
+                break;
+            }
+            case "recalculatestats":{
+                internalSender.critDamageModifier = 1;
+                internalSender.critModifier = 1;
+                internalSender.accuracyModifier = 1;
+                internalSender.defenseMultiplier = 1;
+                internalSender.strengthMultiplier = 1;
+
+                internalSender.baseCrit = 10 + internalSender.level * 0.5;
+                internalSender.baseStrength = 10 + internalSender.level * 6;
+                internalSender.baseDefense = 10 + internalSender.level * 8;
+
+                for (Trait t : internalSender.buffs) {
+                    t.onEnable();
+                }
+                BotUtils.sendMessage(channel, "Recalculated stats");
                 break;
             }
             case "additem":{

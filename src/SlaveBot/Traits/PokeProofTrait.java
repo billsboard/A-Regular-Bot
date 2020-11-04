@@ -35,9 +35,15 @@ public class PokeProofTrait extends Trait {
             if(item.name.toLowerCase().contains("stick")){
                 return true;
             }
+            else if(item.name.equalsIgnoreCase("baseball bat")){
+                return true;
+            }
         }
         else if(attackType.equals("DEFEND")){
             if(item.name.toLowerCase().contains("stick")){
+                return true;
+            }
+            else if(item.name.equalsIgnoreCase("baseball bat")){
                 return true;
             }
         }

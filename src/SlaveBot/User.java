@@ -19,7 +19,7 @@ public class User implements Serializable {
     int level = 0;
     private double xp = 0.0;
 
-    long lastDaily, lastEscape, lastCrime, lastSlave, lastAttack, lastHeal, lastWork, lastWeekly, lastSlaveWork, lastLoot, lastDrop;
+    long lastDaily, lastEscape, lastCrime, lastSlave, lastAttack, lastHeal, lastWork, lastWeekly, lastSlaveWork, lastLoot, lastDrop, lastTraitToggle;
 
     int escapedSlaves = 0, deadSlaves = 0;
 
@@ -108,6 +108,16 @@ public class User implements Serializable {
             c.set(Calendar.MILLISECOND, 0);
             c.setTimeZone(TimeZone.getTimeZone("PST"));
             lastDaily = c.getTime().getTime();
+            return true;
+        }
+        return false;
+    }
+
+    boolean canTraitToggle(){
+        Date date1 = new Date(lastTraitToggle);
+        Date date2 = new Date();
+        if(Math.abs(date1.getTime() - date2.getTime()) >= BotUtils.crimeTime){
+            lastTraitToggle = date2.getTime();
             return true;
         }
         return false;
@@ -367,17 +377,20 @@ public class User implements Serializable {
     void sendInventory(MessageChannel channel){
         Consumer<EmbedCreateSpec> embedCreateSpec = embed -> {
             embed.setTitle(username + "'s inventory");
-            String s = "";
             ArrayList<Item> keys = new ArrayList<>(inventory.keySet());
             Collections.sort(keys);
+
+            StringBuilder x = new StringBuilder(), y = new StringBuilder();
             for (Item i : keys) {
                 int quantity = inventory.get(i);
                 if(quantity <= 0) inventory.remove(i);
                 else{
-                    s += quantity + " " + i.getName() + "\n";
+                    x.append(quantity).append("\n");
+                    y.append(i.name).append("\n");
                 }
             }
-            embed.addField("\u200b", s, false);
+            embed.addField("Quantity", x.toString(), true);
+            embed.addField("Item", y.toString(), true);
         };
 
         BotUtils.sendEmbedSpec(channel, embedCreateSpec);
@@ -420,7 +433,7 @@ public class User implements Serializable {
         return maxHealth;
     }
 
-    void setShield(int shield){
+    public void setShield(int shield){
         this.shieldRemaining = shield;
     }
 
@@ -432,7 +445,7 @@ public class User implements Serializable {
         return reputation;
     }
 
-    void changeReputation(double change){
+    public void changeReputation(double change){
         if(reputation + change > BotUtils.maxReputationCap) reputation = BotUtils.maxReputationCap;
         else if(reputation + change <= -BotUtils.maxReputationCap) reputation = -BotUtils.maxReputationCap;
         else reputation += change;

@@ -35,6 +35,7 @@ class BotUtils {
     static long slaveWorkTime = BotUtils.MILLIS_IN_MINUTE / 3;
     static long lootTime = (BotUtils.MILLIS_IN_MINUTE * 10);
     static long dropTime = (BotUtils.MILLIS_IN_HOUR);
+    static long traitToggleTime = BotUtils.MILLIS_IN_MINUTE * 20;
 
 
     static boolean botFightActive = false;
